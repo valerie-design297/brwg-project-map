@@ -1,8 +1,8 @@
-// Create map
+// Create the map
 const map = L.map("map").setView([39.55, -106.15], 9);
 
 
-// TOPOGRAPHIC BASEMAP
+// BASEMAP
 L.tileLayer(
   "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
   {
@@ -13,48 +13,45 @@ L.tileLayer(
 ).addTo(map);
 
 
-// USGS HUC8 URL
+// USGS HUC8 QUERY
 const hucURL =
   "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4/query" +
-  "?where=huc8%3D%2714010002%27" +
-  "&outFields=*" +
+  "?where=HUC8%3D%2714010002%27" +
+  "&outFields=HUC8,NAME" +
   "&returnGeometry=true" +
   "&outSR=4326" +
-  "&f=geojson";
+  "&f=json";
 
 
 fetch(hucURL)
   .then(response => response.json())
   .then(data => {
 
-    console.log("Watershed data:", data);
+    console.log("USGS response:", data);
 
-    // -----------------------------
-    // WATERSHED BOUNDARY
-    // -----------------------------
+    if (!data.features || data.features.length === 0) {
+      console.error("No watershed found.");
+      return;
+    }
 
-    const watershed = L.geoJSON(data, {
-      style: {
-        color: "#f28c28",
-        weight: 5,
-        opacity: 1,
-        fillColor: "#ffffff",
-        fillOpacity: 0
-      }
-    }).addTo(map);
+    const feature = data.features[0];
+
+    // ArcGIS polygon geometry stores coordinates as "rings"
+    const rings = feature.geometry.rings;
 
 
-    // Zoom map to watershed
-    map.fitBounds(watershed.getBounds(), {
-      padding: [25, 25]
-    });
+    // Convert ArcGIS [longitude, latitude]
+    // into Leaflet [latitude, longitude]
+    const watershedRings = rings.map(ring =>
+      ring.map(coord => [coord[1], coord[0]])
+    );
 
 
-    // -----------------------------
-    // DARKEN EVERYTHING OUTSIDE
-    // -----------------------------
+    // -----------------------------------
+    // OUTSIDE MASK
+    // -----------------------------------
 
-    const worldBounds = [
+    const outerWorld = [
       [-90, -180],
       [-90, 180],
       [90, 180],
@@ -62,59 +59,11 @@ fetch(hucURL)
     ];
 
 
-    // Get watershed coordinates
-    const feature = data.features[0];
-    const geometry = feature.geometry;
-
-    let holes = [];
-
-
-    // GeoJSON coordinates are [longitude, latitude]
-    // Leaflet wants [latitude, longitude]
-
-    if (geometry.type === "Polygon") {
-
-      geometry.coordinates.forEach(ring => {
-
-        const leafletRing = ring.map(coord => [
-          coord[1],
-          coord[0]
-        ]);
-
-        holes.push(leafletRing);
-
-      });
-
-    }
-
-
-    else if (geometry.type === "MultiPolygon") {
-
-      geometry.coordinates.forEach(polygon => {
-
-        polygon.forEach(ring => {
-
-          const leafletRing = ring.map(coord => [
-            coord[1],
-            coord[0]
-          ]);
-
-          holes.push(leafletRing);
-
-        });
-
-      });
-
-    }
-
-
-    // Create polygon covering the world,
-    // with the watershed cut out as a hole
     const mask = L.polygon(
-      [worldBounds, ...holes],
+      [outerWorld, ...watershedRings],
       {
         stroke: false,
-        fillColor: "#333333",
+        fillColor: "#555555",
         fillOpacity: 0.55,
         fillRule: "evenodd",
         interactive: false
@@ -122,12 +71,43 @@ fetch(hucURL)
     ).addTo(map);
 
 
-    // Keep watershed outline ABOVE the mask
+    // -----------------------------------
+    // WATERSHED OUTLINE
+    // -----------------------------------
+
+    const watershed = L.polygon(
+      watershedRings,
+      {
+        color: "#ff8c00",
+        weight: 6,
+        opacity: 1,
+
+        // Keep inside basically untouched
+        fillColor: "#ffffff",
+        fillOpacity: 0
+      }
+    ).addTo(map);
+
+
+    // Make sure outline sits above mask
     watershed.bringToFront();
 
+
+    // Automatically zoom to watershed
+    map.fitBounds(
+      watershed.getBounds(),
+      {
+        padding: [30, 30]
+      }
+    );
+
+
+    // Optional popup on watershed
+    watershed.bindPopup(
+      "<strong>Blue River Subbasin</strong><br>HUC8: 14010002"
+    );
+
   })
-
-
   .catch(error => {
     console.error("Error loading watershed:", error);
   });
