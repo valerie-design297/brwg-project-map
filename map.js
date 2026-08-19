@@ -1,8 +1,5 @@
-// Create the map
 const map = L.map("map").setView([39.55, -106.15], 9);
 
-
-// BASEMAP
 L.tileLayer(
   "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
   {
@@ -13,101 +10,89 @@ L.tileLayer(
 ).addTo(map);
 
 
-// USGS HUC8 QUERY
-const hucURL =
-  "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4/query" +
-  "?where=HUC8%3D%2714010002%27" +
-  "&outFields=HUC8,NAME" +
-  "&returnGeometry=true" +
-  "&outSR=4326" +
-  "&f=json";
-
-
-fetch(hucURL)
+// Load LOCAL watershed file
+fetch("data/blue-river-huc8.geojson")
   .then(response => response.json())
   .then(data => {
 
-    console.log("USGS response:", data);
+    // -----------------------------
+    // ADD WATERSHED
+    // -----------------------------
 
-    if (!data.features || data.features.length === 0) {
-      console.error("No watershed found.");
-      return;
-    }
-
-    const feature = data.features[0];
-
-    // ArcGIS polygon geometry stores coordinates as "rings"
-    const rings = feature.geometry.rings;
-
-
-    // Convert ArcGIS [longitude, latitude]
-    // into Leaflet [latitude, longitude]
-    const watershedRings = rings.map(ring =>
-      ring.map(coord => [coord[1], coord[0]])
-    );
-
-
-    // -----------------------------------
-    // OUTSIDE MASK
-    // -----------------------------------
-
-    const outerWorld = [
-      [-90, -180],
-      [-90, 180],
-      [90, 180],
-      [90, -180]
-    ];
-
-
-    const mask = L.polygon(
-      [outerWorld, ...watershedRings],
-      {
-        stroke: false,
-        fillColor: "#555555",
-        fillOpacity: 0.55,
-        fillRule: "evenodd",
-        interactive: false
-      }
-    ).addTo(map);
-
-
-    // -----------------------------------
-    // WATERSHED OUTLINE
-    // -----------------------------------
-
-    const watershed = L.polygon(
-      watershedRings,
-      {
+    const watershed = L.geoJSON(data, {
+      style: {
         color: "#ff8c00",
-        weight: 6,
+        weight: 5,
         opacity: 1,
-
-        // Keep inside basically untouched
-        fillColor: "#ffffff",
         fillOpacity: 0
       }
-    ).addTo(map);
+    }).addTo(map);
 
 
-    // Make sure outline sits above mask
-    watershed.bringToFront();
+    // Zoom directly to watershed
+    map.fitBounds(watershed.getBounds(), {
+      padding: [25, 25]
+    });
 
 
-    // Automatically zoom to watershed
-    map.fitBounds(
-      watershed.getBounds(),
-      {
-        padding: [30, 30]
+    // -----------------------------
+    // DIM AREA OUTSIDE WATERSHED
+    // -----------------------------
+
+    const world = {
+      type: "Polygon",
+      coordinates: [[
+        [-180, -90],
+        [180, -90],
+        [180, 90],
+        [-180, 90],
+        [-180, -90]
+      ]]
+    };
+
+
+    const watershedGeometry = data.features[0].geometry;
+
+    let holes = [];
+
+    if (watershedGeometry.type === "Polygon") {
+      holes = watershedGeometry.coordinates;
+    }
+
+    if (watershedGeometry.type === "MultiPolygon") {
+      watershedGeometry.coordinates.forEach(polygon => {
+        holes.push(...polygon);
+      });
+    }
+
+
+    const maskGeoJSON = {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          world.coordinates[0],
+          ...holes
+        ]
       }
-    );
+    };
 
 
-    // Optional popup on watershed
-    watershed.bindPopup(
-      "<strong>Blue River Subbasin</strong><br>HUC8: 14010002"
-    );
+    L.geoJSON(maskGeoJSON, {
+      style: {
+        stroke: false,
+        fillColor: "#333333",
+        fillOpacity: 0.5,
+        fillRule: "evenodd"
+      },
+      interactive: false
+    }).addTo(map);
+
+
+    // Put orange boundary back on top
+    watershed.bringToFront();
 
   })
   .catch(error => {
-    console.error("Error loading watershed:", error);
+    console.error("Error loading local watershed:", error);
   });
