@@ -10,30 +10,29 @@
 
 const map = L.map("map", {
   zoomControl: true
-}).setView(
-  [39.55, -106.15],
-  9
-);
+}).setView([39.55, -106.15], 9);
 
 
 // ---------------------------------------------
-// TOPOGRAPHIC BASEMAP
+// BASEMAP
 // ---------------------------------------------
+//
+// Cleaner, natural-colored basemap.
+// The watershed itself will remain completely
+// unchanged while the outside is dimmed.
+//
 
 L.tileLayer(
-  "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
-    maxZoom: 17,
-
-    attribution:
-      'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap'
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
   }
 ).addTo(map);
 
 
 // ---------------------------------------------
 // BLUE RIVER HUC8
-//
 // HUC8: 14010002
 // ---------------------------------------------
 
@@ -47,7 +46,7 @@ const hucURL =
 
 
 // ---------------------------------------------
-// DOWNLOAD WATERSHED
+// LOAD WATERSHED
 // ---------------------------------------------
 
 fetch(hucURL)
@@ -64,139 +63,99 @@ fetch(hucURL)
 
   })
 
-
   .then(data => {
 
-    console.log(
-      "Blue River watershed data:",
-      data
-    );
-
-
-    // Make sure USGS actually returned something
-    if (
-      !data.features ||
-      data.features.length === 0
-    ) {
-
+    if (!data.features || data.features.length === 0) {
       throw new Error(
         "USGS returned no watershed features."
       );
-
     }
 
 
     // -----------------------------------------
-    // CREATE OUTSIDE MASK
+    // GRAY OUT EVERYTHING OUTSIDE HUC8
     // -----------------------------------------
-
-    /*
-      Turf.mask() creates a polygon covering
-      the surrounding world with our watershed
-      cut out of the middle.
-
-      Result:
-
-      OUTSIDE = darkened
-      INSIDE  = normal basemap
-    */
 
     const outsideMask = turf.mask(data);
 
 
-    const maskLayer = L.geoJSON(
-      outsideMask,
-      {
+    L.geoJSON(outsideMask, {
 
-        style: {
-          fillColor: "#444444",
+      style: {
 
-          // CHANGE THIS NUMBER TO CONTROL
-          // HOW DARK THE OUTSIDE AREA IS
-          fillOpacity: 0.50,
+        // Neutral gray
+        fillColor: "#808080",
 
-          stroke: false
-        },
+        // Controls how faded the outside is.
+        // Try 0.35 - 0.55.
+        fillOpacity: 0.45,
 
-        interactive: false
+        stroke: false
+
+      },
+
+      interactive: false
+
+    }).addTo(map);
+
+
+    // -----------------------------------------
+    // DRAW HUC8 BOUNDARY
+    // -----------------------------------------
+
+    const watershedLayer = L.geoJSON(data, {
+
+      style: {
+
+        // Orange boundary
+        color: "#f28c28",
+
+        weight: 5,
+
+        opacity: 1,
+
+        // IMPORTANT:
+        // absolutely NO fill over watershed
+        fillOpacity: 0
 
       }
-    ).addTo(map);
+
+    }).addTo(map);
 
 
-    // -----------------------------------------
-    // DRAW WATERSHED
-    // -----------------------------------------
-
-    const watershedLayer = L.geoJSON(
-      data,
-      {
-
-        style: {
-
-          // Orange outline
-          color: "#ff8c00",
-
-          // Thickness of outline
-          weight: 5,
-
-          opacity: 1,
-
-          // Leave watershed interior clear
-          fillColor: "#ffffff",
-          fillOpacity: 0
-
-        }
-
-      }
-    ).addTo(map);
-
-
-    // -----------------------------------------
-    // KEEP ORANGE OUTLINE ABOVE MASK
-    // -----------------------------------------
-
+    // Keep orange outline above gray mask
     watershedLayer.bringToFront();
 
 
     // -----------------------------------------
-    // AUTOMATICALLY ZOOM TO WATERSHED
+    // ZOOM TO WATERSHED
     // -----------------------------------------
 
     const bounds = watershedLayer.getBounds();
 
-
     if (bounds.isValid()) {
 
-      map.fitBounds(
-        bounds,
-        {
-          padding: [30, 30]
-        }
-      );
+      map.fitBounds(bounds, {
+        padding: [35, 35]
+      });
 
     }
 
 
     // -----------------------------------------
-    // WATERSHED POPUP
+    // POPUP
     // -----------------------------------------
 
     watershedLayer.bindPopup(
       `
-        <strong>Blue River Subbasin</strong>
-        <br>
-        HUC8: 14010002
+      <strong>Blue River Subbasin</strong>
+      <br>
+      HUC8: 14010002
       `
     );
 
-
   })
 
-
-  // -------------------------------------------
-  // ERROR HANDLING
-  // -------------------------------------------
 
   .catch(error => {
 
