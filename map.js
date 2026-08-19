@@ -1,3 +1,4 @@
+alert("NEW MAP.JS IS LOADING");
 const map = L.map("map").setView([39.55, -106.15], 9);
 
 L.tileLayer(
