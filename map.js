@@ -40,10 +40,6 @@ const hucURL =
   "&f=geojson";
 
 
-// ---------------------------------------------
-// LOAD WATERSHED
-// ---------------------------------------------
-
 fetch(hucURL)
 
   .then(response => {
@@ -67,9 +63,9 @@ fetch(hucURL)
     }
 
 
-    // -----------------------------------------
-    // GRAY OUT EVERYTHING OUTSIDE HUC8
-    // -----------------------------------------
+    // =========================================
+    // OUTSIDE WATERSHED MASK
+    // =========================================
 
     const outsideMask = turf.mask(data);
 
@@ -79,7 +75,8 @@ fetch(hucURL)
 
         fillColor: "#808080",
 
-        // Change this to control darkness
+        // Change this number to adjust
+        // how faded the outside area is
         fillOpacity: 0.45,
 
         stroke: false
@@ -91,9 +88,9 @@ fetch(hucURL)
     }).addTo(map);
 
 
-    // -----------------------------------------
-    // DRAW HUC8 BOUNDARY
-    // -----------------------------------------
+    // =========================================
+    // WATERSHED BOUNDARY
+    // =========================================
 
     const watershedLayer = L.geoJSON(data, {
 
@@ -130,27 +127,9 @@ fetch(hucURL)
     }
 
 
-    // -----------------------------------------
-    // WATERSHED POPUP
-    // -----------------------------------------
-
-    watershedLayer.bindPopup(
-      `
-      <strong>Blue River Subbasin</strong>
-      <br>
-      HUC8: 14010002
-      `
-    );
-
-
     // =========================================
-    // PROJECT MARKERS
+    // PROJECT MARKER DESIGN
     // =========================================
-
-
-    // -----------------------------------------
-    // CUSTOM PROJECT ICON
-    // -----------------------------------------
 
     const projectIcon = L.divIcon({
 
@@ -167,46 +146,130 @@ fetch(hucURL)
     });
 
 
-    // -----------------------------------------
-    // BLUE RIVER HABITAT RESTORATION
-    // -----------------------------------------
+    // =========================================
+    // PROJECT DATA
+    // =========================================
+    //
+    // IMPORTANT:
+    // Blue River Habitat Restoration has a
+    // published precise coordinate.
+    //
+    // The other coordinates are currently
+    // representative points and can be refined
+    // later when exact project coordinates
+    // are available.
+    // =========================================
 
-    L.marker(
-      [39.63, -106.08],
+    const projects = [
+
       {
-        icon: projectIcon
+        name:
+          "Blue River Habitat Restoration Project",
+
+        lat: 39.627140,
+        lng: -106.071730,
+
+        description:
+          "The Blue River Habitat Restoration Project aims to improve river and riparian habitat below Dillon Dam and help restore the health of the Blue River fishery."
+      },
+
+
+      {
+        name:
+          "Peru Creek Mine Restoration",
+
+        // Approximate representative location
+        // in the Peru Creek drainage
+        lat: 39.603,
+        lng: -105.995,
+
+        description:
+          "Under the Snake River Watershed Plan, several mine mitigation and restoration projects have taken place in the Peru Creek drainage."
+      },
+
+
+      {
+        name:
+          "Swan River Restoration Project",
+
+        // Approximate representative location
+        // in the upper Swan River drainage
+        lat: 39.504,
+        lng: -106.001,
+
+        description:
+          "This multi-phase restoration project addresses damage caused by historic dredge mining in the upper Swan River drainage and restores river habitat and ecological function."
+      },
+
+
+      {
+        name:
+          "Tenmile Creek Restoration Project",
+
+        // Approximate representative location
+        // along Tenmile Creek
+        lat: 39.575,
+        lng: -106.275,
+
+        description:
+          "BRWG and the U.S. Forest Service restored a heavily impacted section of Tenmile Creek, improving stream habitat, wetlands, floodplain connectivity, recreation, and public access."
       }
-    )
 
-    .addTo(map)
+    ];
 
-    .bindPopup(
-      `
-      <div class="project-popup">
 
-        <h3>
-          Blue River Habitat Restoration Project
-        </h3>
+    // =========================================
+    // ADD PROJECT MARKERS TO MAP
+    // =========================================
 
-        <p>
-          This restoration project aims to restore
-          habitat along the Blue River with the goal
-          of improving the overall ecosystem and
-          restoring Gold Medal status to the Blue
-          River below the Dillon Dam.
-        </p>
+    projects.forEach(project => {
 
-      </div>
-      `
-    );
+      const marker = L.marker(
+
+        [
+          project.lat,
+          project.lng
+        ],
+
+        {
+          icon: projectIcon
+        }
+
+      ).addTo(map);
+
+
+      marker.bindPopup(
+        `
+        <div class="project-popup">
+
+          <h3>
+            ${project.name}
+          </h3>
+
+          <p>
+            ${project.description}
+          </p>
+
+        </div>
+        `
+      );
+
+    });
+
+
+    // -----------------------------------------
+    // KEEP WATERSHED BORDER VISIBLE
+    // -----------------------------------------
+
+    watershedLayer.bringToFront();
 
 
   })
 
 
-  // ---------------------------------------------
+  // ===========================================
   // ERROR HANDLING
-  // ---------------------------------------------
+  // ===========================================
 
   .catch(error => {
 
