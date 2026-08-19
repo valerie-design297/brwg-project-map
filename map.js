@@ -40,6 +40,10 @@ const hucURL =
   "&f=geojson";
 
 
+// ---------------------------------------------
+// LOAD WATERSHED
+// ---------------------------------------------
+
 fetch(hucURL)
 
   .then(response => {
@@ -64,7 +68,7 @@ fetch(hucURL)
 
 
     // =========================================
-    // OUTSIDE WATERSHED MASK
+    // GRAY OUT EVERYTHING OUTSIDE HUC8
     // =========================================
 
     const outsideMask = turf.mask(data);
@@ -75,8 +79,8 @@ fetch(hucURL)
 
         fillColor: "#808080",
 
-        // Change this number to adjust
-        // how faded the outside area is
+        // Change this number to make the
+        // outside lighter or darker
         fillOpacity: 0.45,
 
         stroke: false
@@ -149,16 +153,6 @@ fetch(hucURL)
     // =========================================
     // PROJECT DATA
     // =========================================
-    //
-    // IMPORTANT:
-    // Blue River Habitat Restoration has a
-    // published precise coordinate.
-    //
-    // The other coordinates are currently
-    // representative points and can be refined
-    // later when exact project coordinates
-    // are available.
-    // =========================================
 
     const projects = [
 
@@ -178,8 +172,6 @@ fetch(hucURL)
         name:
           "Peru Creek Mine Restoration",
 
-        // Approximate representative location
-        // in the Peru Creek drainage
         lat: 39.603,
         lng: -105.995,
 
@@ -192,8 +184,6 @@ fetch(hucURL)
         name:
           "Swan River Restoration Project",
 
-        // Approximate representative location
-        // in the upper Swan River drainage
         lat: 39.504,
         lng: -106.001,
 
@@ -206,8 +196,6 @@ fetch(hucURL)
         name:
           "Tenmile Creek Restoration Project",
 
-        // Approximate representative location
-        // along Tenmile Creek
         lat: 39.575,
         lng: -106.275,
 
@@ -219,27 +207,27 @@ fetch(hucURL)
 
 
     // =========================================
-    // ADD PROJECT MARKERS TO MAP
+    // ADD PROJECT MARKERS
     // =========================================
+
+    let selectedMarker = null;
+
 
     projects.forEach(project => {
 
       const marker = L.marker(
-
-        [
-          project.lat,
-          project.lng
-        ],
-
+        [project.lat, project.lng],
         {
           icon: projectIcon
         }
-
       ).addTo(map);
 
 
-      marker.bindPopup(
-        `
+      // ---------------------------------------
+      // POPUP
+      // ---------------------------------------
+
+      marker.bindPopup(`
         <div class="project-popup">
 
           <h3>
@@ -251,18 +239,70 @@ fetch(hucURL)
           </p>
 
         </div>
-        `
-      );
+      `);
+
+
+      // ---------------------------------------
+      // CLICK MARKER
+      // ---------------------------------------
+
+      marker.on("click", function () {
+
+        // Reset previously selected marker
+        if (selectedMarker) {
+
+          const oldElement =
+            selectedMarker.getElement();
+
+          if (oldElement) {
+            oldElement.classList.remove("selected");
+          }
+
+        }
+
+
+        // Highlight clicked marker
+        const markerElement =
+          marker.getElement();
+
+        if (markerElement) {
+          markerElement.classList.add("selected");
+        }
+
+
+        selectedMarker = marker;
+
+      });
+
+
+      // ---------------------------------------
+      // POPUP CLOSED
+      // ---------------------------------------
+
+      marker.on("popupclose", function () {
+
+        const markerElement =
+          marker.getElement();
+
+        if (markerElement) {
+          markerElement.classList.remove("selected");
+        }
+
+
+        if (selectedMarker === marker) {
+          selectedMarker = null;
+        }
+
+      });
 
     });
 
 
     // -----------------------------------------
-    // KEEP WATERSHED BORDER VISIBLE
+    // KEEP WATERSHED BORDER ABOVE MASK
     // -----------------------------------------
 
     watershedLayer.bringToFront();
-
 
   })
 
