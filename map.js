@@ -16,11 +16,6 @@ const map = L.map("map", {
 // ---------------------------------------------
 // BASEMAP
 // ---------------------------------------------
-//
-// Cleaner, natural-colored basemap.
-// The watershed itself will remain completely
-// unchanged while the outside is dimmed.
-//
 
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -78,16 +73,13 @@ fetch(hucURL)
 
     const outsideMask = turf.mask(data);
 
-
     L.geoJSON(outsideMask, {
 
       style: {
 
-        // Neutral gray
         fillColor: "#808080",
 
-        // Controls how faded the outside is.
-        // Try 0.35 - 0.55.
+        // Change this to control darkness
         fillOpacity: 0.45,
 
         stroke: false
@@ -107,15 +99,12 @@ fetch(hucURL)
 
       style: {
 
-        // Orange boundary
         color: "#f28c28",
 
         weight: 5,
 
         opacity: 1,
 
-        // IMPORTANT:
-        // absolutely NO fill over watershed
         fillOpacity: 0
 
       }
@@ -123,7 +112,6 @@ fetch(hucURL)
     }).addTo(map);
 
 
-    // Keep orange outline above gray mask
     watershedLayer.bringToFront();
 
 
@@ -143,7 +131,7 @@ fetch(hucURL)
 
 
     // -----------------------------------------
-    // POPUP
+    // WATERSHED POPUP
     // -----------------------------------------
 
     watershedLayer.bindPopup(
@@ -154,8 +142,71 @@ fetch(hucURL)
       `
     );
 
+
+    // =========================================
+    // PROJECT MARKERS
+    // =========================================
+
+
+    // -----------------------------------------
+    // CUSTOM PROJECT ICON
+    // -----------------------------------------
+
+    const projectIcon = L.divIcon({
+
+      className: "project-marker",
+
+      html: "●",
+
+      iconSize: [26, 26],
+
+      iconAnchor: [13, 13],
+
+      popupAnchor: [0, -15]
+
+    });
+
+
+    // -----------------------------------------
+    // BLUE RIVER HABITAT RESTORATION
+    // -----------------------------------------
+
+    L.marker(
+      [39.63, -106.08],
+      {
+        icon: projectIcon
+      }
+    )
+
+    .addTo(map)
+
+    .bindPopup(
+      `
+      <div class="project-popup">
+
+        <h3>
+          Blue River Habitat Restoration Project
+        </h3>
+
+        <p>
+          This restoration project aims to restore
+          habitat along the Blue River with the goal
+          of improving the overall ecosystem and
+          restoring Gold Medal status to the Blue
+          River below the Dillon Dam.
+        </p>
+
+      </div>
+      `
+    );
+
+
   })
 
+
+  // ---------------------------------------------
+  // ERROR HANDLING
+  // ---------------------------------------------
 
   .catch(error => {
 
