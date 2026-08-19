@@ -28,7 +28,6 @@ L.tileLayer(
 
 // ---------------------------------------------
 // BLUE RIVER HUC8
-// HUC8: 14010002
 // ---------------------------------------------
 
 const hucURL =
@@ -39,10 +38,6 @@ const hucURL =
   "&outSR=4326" +
   "&f=geojson";
 
-
-// ---------------------------------------------
-// LOAD WATERSHED
-// ---------------------------------------------
 
 fetch(hucURL)
 
@@ -76,15 +71,9 @@ fetch(hucURL)
     L.geoJSON(outsideMask, {
 
       style: {
-
         fillColor: "#808080",
-
-        // Change this number to make the
-        // outside lighter or darker
         fillOpacity: 0.45,
-
         stroke: false
-
       },
 
       interactive: false
@@ -99,15 +88,10 @@ fetch(hucURL)
     const watershedLayer = L.geoJSON(data, {
 
       style: {
-
         color: "#f28c28",
-
         weight: 5,
-
         opacity: 1,
-
         fillOpacity: 0
-
       }
 
     }).addTo(map);
@@ -116,9 +100,9 @@ fetch(hucURL)
     watershedLayer.bringToFront();
 
 
-    // -----------------------------------------
+    // =========================================
     // ZOOM TO WATERSHED
-    // -----------------------------------------
+    // =========================================
 
     const bounds = watershedLayer.getBounds();
 
@@ -137,15 +121,19 @@ fetch(hucURL)
 
     const projectIcon = L.divIcon({
 
-      className: "project-marker",
+      className: "project-marker-container",
 
-      html: "●",
+      html: `
+        <div class="project-marker">
+          <span class="marker-center"></span>
+        </div>
+      `,
 
-      iconSize: [26, 26],
+      iconSize: [32, 32],
 
-      iconAnchor: [13, 13],
+      iconAnchor: [16, 16],
 
-      popupAnchor: [0, -15]
+      popupAnchor: [0, -18]
 
     });
 
@@ -248,25 +236,46 @@ fetch(hucURL)
 
       marker.on("click", function () {
 
-        // Reset previously selected marker
+        // Reset old marker
         if (selectedMarker) {
 
           const oldElement =
             selectedMarker.getElement();
 
           if (oldElement) {
-            oldElement.classList.remove("selected");
+
+            const oldCircle =
+              oldElement.querySelector(
+                ".project-marker"
+              );
+
+            if (oldCircle) {
+              oldCircle.classList.remove(
+                "selected"
+              );
+            }
+
           }
 
         }
 
 
         // Highlight clicked marker
+
         const markerElement =
           marker.getElement();
 
         if (markerElement) {
-          markerElement.classList.add("selected");
+
+          const circle =
+            markerElement.querySelector(
+              ".project-marker"
+            );
+
+          if (circle) {
+            circle.classList.add("selected");
+          }
+
         }
 
 
@@ -285,7 +294,18 @@ fetch(hucURL)
           marker.getElement();
 
         if (markerElement) {
-          markerElement.classList.remove("selected");
+
+          const circle =
+            markerElement.querySelector(
+              ".project-marker"
+            );
+
+          if (circle) {
+            circle.classList.remove(
+              "selected"
+            );
+          }
+
         }
 
 
@@ -297,10 +317,6 @@ fetch(hucURL)
 
     });
 
-
-    // -----------------------------------------
-    // KEEP WATERSHED BORDER ABOVE MASK
-    // -----------------------------------------
 
     watershedLayer.bringToFront();
 
