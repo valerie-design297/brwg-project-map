@@ -40,9 +40,7 @@ const topoMap = L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
   {
     maxZoom: 19,
-
-    attribution:
-      "Tiles &copy; Esri"
+    attribution: "Tiles &copy; Esri"
   }
 );
 
@@ -56,9 +54,7 @@ const satelliteMap = L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
   {
     maxZoom: 19,
-
-    attribution:
-      "Tiles &copy; Esri"
+    attribution: "Tiles &copy; Esri"
   }
 );
 
@@ -75,13 +71,9 @@ standardMap.addTo(map);
 // ---------------------------------------------
 
 const baseMaps = {
-
   "Standard": standardMap,
-
   "Topographic": topoMap,
-
   "Satellite": satelliteMap
-
 };
 
 
@@ -90,7 +82,10 @@ L.control.layers(
   null,
   {
     position: "topright",
-    collapsed: true
+
+    // Keep options visible so users immediately
+    // know that different map layers are available.
+    collapsed: false
   }
 ).addTo(map);
 
@@ -118,12 +113,10 @@ fetch(hucURL)
   .then(response => {
 
     if (!response.ok) {
-
       throw new Error(
         "USGS request failed: " +
         response.status
       );
-
     }
 
     return response.json();
@@ -156,19 +149,13 @@ fetch(hucURL)
     L.geoJSON(
       outsideMask,
       {
-
         style: {
-
           fillColor: "#808080",
-
           fillOpacity: 0.45,
-
           stroke: false
-
         },
 
         interactive: false
-
       }
 
     ).addTo(map);
@@ -182,19 +169,12 @@ fetch(hucURL)
       L.geoJSON(
         data,
         {
-
           style: {
-
             color: "#f28c28",
-
             weight: 5,
-
             opacity: 1,
-
             fillOpacity: 0
-
           }
-
         }
       ).addTo(map);
 
@@ -252,7 +232,6 @@ fetch(hucURL)
     // =========================================
 
     const projects = [
-
 
       {
         name:
@@ -337,16 +316,10 @@ fetch(hucURL)
       marker.bindTooltip(
         project.name,
         {
-
           direction: "right",
-
           offset: [15, 0],
-
           opacity: 1,
-
-          className:
-            "project-tooltip"
-
+          className: "project-tooltip"
         }
       );
 
@@ -486,9 +459,7 @@ fetch(hucURL)
 
     const programsControl =
       L.control({
-
         position: "topleft"
-
       });
 
 
@@ -533,6 +504,8 @@ fetch(hucURL)
           <div class="programs-content">
 
 
+            <!-- SUMMIT COUNTY OUTDOOR COALITION -->
+
             <div class="program-item">
 
               <button
@@ -563,6 +536,8 @@ fetch(hucURL)
 
             </div>
 
+
+            <!-- RIVER WATCH -->
 
             <div class="program-item">
 
@@ -595,6 +570,8 @@ fetch(hucURL)
             </div>
 
 
+            <!-- EDUCATIONAL PROGRAMMING -->
+
             <div class="program-item">
 
               <button
@@ -626,6 +603,8 @@ fetch(hucURL)
             </div>
 
 
+            <!-- WILDFIRE READY WATERSHEDS -->
+
             <div class="program-item">
 
               <button
@@ -656,6 +635,8 @@ fetch(hucURL)
 
             </div>
 
+
+            <!-- BLUE RIVER CLEAN-UP FESTIVAL -->
 
             <div class="program-item">
 
@@ -692,6 +673,8 @@ fetch(hucURL)
         `;
 
 
+        // Prevent panel interactions from moving map
+
         L.DomEvent.disableClickPropagation(
           div
         );
@@ -700,6 +683,10 @@ fetch(hucURL)
           div
         );
 
+
+        // -------------------------------------
+        // EXPAND / COLLAPSE PROGRAM ITEMS
+        // -------------------------------------
 
         const programButtons =
           div.querySelectorAll(
@@ -726,6 +713,8 @@ fetch(hucURL)
                   );
 
 
+                // Close all items
+
                 div
                   .querySelectorAll(
                     ".program-item"
@@ -741,10 +730,9 @@ fetch(hucURL)
 
 
                       const arrow =
-                        otherItem
-                          .querySelector(
-                            ".program-arrow"
-                          );
+                        otherItem.querySelector(
+                          ".program-arrow"
+                        );
 
 
                       if (arrow) {
@@ -757,6 +745,8 @@ fetch(hucURL)
                     }
                   );
 
+
+                // Open selected item
 
                 if (!currentlyOpen) {
 
@@ -788,6 +778,10 @@ fetch(hucURL)
           }
         );
 
+
+        // -------------------------------------
+        // COLLAPSE WHOLE PANEL
+        // -------------------------------------
 
         const toggle =
           div.querySelector(
@@ -864,9 +858,7 @@ fetch(hucURL)
 
     const legend =
       L.control({
-
         position: "bottomright"
-
       });
 
 
@@ -894,9 +886,7 @@ fetch(hucURL)
 
           <div class="legend-row">
 
-            <span
-              class="legend-dot teal">
-            </span>
+            <span class="legend-dot teal"></span>
 
             <span>
               Mapped project
@@ -907,9 +897,7 @@ fetch(hucURL)
 
           <div class="legend-row">
 
-            <span
-              class="legend-dot orange">
-            </span>
+            <span class="legend-dot orange"></span>
 
             <span>
               Selected location
@@ -920,9 +908,7 @@ fetch(hucURL)
 
           <div class="legend-row">
 
-            <span
-              class="legend-line">
-            </span>
+            <span class="legend-line"></span>
 
             <span>
               Blue River HUC8 boundary
