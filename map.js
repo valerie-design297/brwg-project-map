@@ -300,28 +300,24 @@ fetch(hucURL)
       ).addTo(map);
 
 
-      // =======================================
+      // ---------------------------------------
       // HOVER LABEL
-      // =======================================
+      // ---------------------------------------
 
       marker.bindTooltip(
         project.name,
         {
           direction: "right",
-
           offset: [15, 0],
-
           opacity: 1,
-
-          className:
-            "project-tooltip"
+          className: "project-tooltip"
         }
       );
 
 
-      // =======================================
+      // ---------------------------------------
       // OPTIONAL NOTE
-      // =======================================
+      // ---------------------------------------
 
       let noteHTML = "";
 
@@ -336,9 +332,9 @@ fetch(hucURL)
       }
 
 
-      // =======================================
+      // ---------------------------------------
       // POPUP
-      // =======================================
+      // ---------------------------------------
 
       marker.bindPopup(`
         <div class="project-popup">
@@ -361,13 +357,11 @@ fetch(hucURL)
       `);
 
 
-      // =======================================
+      // ---------------------------------------
       // CLICK MARKER
-      // =======================================
+      // ---------------------------------------
 
       marker.on("click", function () {
-
-        // Reset old marker
 
         if (selectedMarker) {
 
@@ -382,19 +376,13 @@ fetch(hucURL)
               );
 
             if (oldCircle) {
-
-              oldCircle.classList.remove(
-                "selected"
-              );
-
+              oldCircle.classList.remove("selected");
             }
 
           }
 
         }
 
-
-        // Highlight clicked marker
 
         const markerElement =
           marker.getElement();
@@ -407,11 +395,7 @@ fetch(hucURL)
             );
 
           if (circle) {
-
-            circle.classList.add(
-              "selected"
-            );
-
+            circle.classList.add("selected");
           }
 
         }
@@ -422,9 +406,9 @@ fetch(hucURL)
       });
 
 
-      // =======================================
+      // ---------------------------------------
       // POPUP CLOSED
-      // =======================================
+      // ---------------------------------------
 
       marker.on("popupclose", function () {
 
@@ -439,20 +423,14 @@ fetch(hucURL)
             );
 
           if (circle) {
-
-            circle.classList.remove(
-              "selected"
-            );
-
+            circle.classList.remove("selected");
           }
 
         }
 
 
         if (selectedMarker === marker) {
-
           selectedMarker = null;
-
         }
 
       });
@@ -460,7 +438,64 @@ fetch(hucURL)
     });
 
 
-    // Keep watershed boundary visible
+    // =========================================
+    // LEGEND
+    // =========================================
+
+    const legend = L.control({
+      position: "bottomright"
+    });
+
+
+    legend.onAdd = function () {
+
+      const div = L.DomUtil.create(
+        "div",
+        "map-legend"
+      );
+
+
+      div.innerHTML = `
+        <div class="legend-title">
+          Map Guide
+        </div>
+
+        <div class="legend-instructions">
+          Hover for a name • Click for details
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-dot teal"></span>
+          <span>Project or program</span>
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-dot orange"></span>
+          <span>Selected location</span>
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-line"></span>
+          <span>Blue River HUC8 boundary</span>
+        </div>
+      `;
+
+
+      // Prevent map dragging/zooming when
+      // interacting with the legend
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
+
+
+      return div;
+
+    };
+
+
+    legend.addTo(map);
+
+
+    // Keep watershed line visible
     watershedLayer.bringToFront();
 
   })
