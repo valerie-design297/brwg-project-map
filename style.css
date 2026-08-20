@@ -5,14 +5,13 @@
 
 
 /* =========================================
-   PAGE SETUP
+   PAGE
 ========================================= */
 
 html,
 body {
   margin: 0;
   padding: 0;
-
   width: 100%;
   height: 100%;
 }
@@ -49,14 +48,12 @@ header {
 
 header h1 {
   margin: 0;
-
   font-size: 28px;
 }
 
 
 header p {
   margin: 4px 0 0;
-
   font-size: 18px;
 }
 
@@ -67,9 +64,7 @@ header p {
 
 main {
   flex: 1;
-
   min-height: 0;
-
   width: 100%;
 }
 
@@ -81,7 +76,7 @@ main {
 
 
 /* =========================================
-   LEAFLET MARKER CONTAINER
+   PROJECT MARKERS
 ========================================= */
 
 .project-marker-container {
@@ -89,10 +84,6 @@ main {
   border: none;
 }
 
-
-/* =========================================
-   PROJECT MARKER
-========================================= */
 
 .project-marker {
   position: relative;
@@ -105,7 +96,6 @@ main {
   background: #087f91;
 
   border: 3px solid white;
-
   border-radius: 50%;
 
   box-sizing: border-box;
@@ -122,10 +112,6 @@ main {
     box-shadow 0.2s ease;
 }
 
-
-/* =========================================
-   WHITE CENTER DOT
-========================================= */
 
 .marker-center {
   position: absolute;
@@ -146,7 +132,7 @@ main {
 
 
 /* =========================================
-   MARKER HOVER
+   MARKER PULSE
 ========================================= */
 
 .project-marker:hover {
@@ -158,15 +144,10 @@ main {
 }
 
 
-/* =========================================
-   PULSE / BULGE ANIMATION
-========================================= */
-
 @keyframes markerPulse {
 
   0% {
-    transform:
-      scale(1.20);
+    transform: scale(1.20);
 
     box-shadow:
       0 0 0 0
@@ -175,8 +156,7 @@ main {
 
 
   50% {
-    transform:
-      scale(1.45);
+    transform: scale(1.45);
 
     box-shadow:
       0 0 0 10px
@@ -185,8 +165,7 @@ main {
 
 
   100% {
-    transform:
-      scale(1.20);
+    transform: scale(1.20);
 
     box-shadow:
       0 0 0 0
@@ -197,14 +176,13 @@ main {
 
 
 /* =========================================
-   CLICKED / SELECTED MARKER
+   SELECTED MARKER
 ========================================= */
 
 .project-marker.selected {
   background: #f28c28;
 
-  transform:
-    scale(1.45);
+  transform: scale(1.45);
 
   animation: none;
 
@@ -214,10 +192,6 @@ main {
 }
 
 
-/* =========================================
-   SELECTED MARKER CENTER
-========================================= */
-
 .project-marker.selected
 .marker-center {
   width: 7px;
@@ -226,73 +200,7 @@ main {
 
 
 /* =========================================
-   PROJECT POPUP
-========================================= */
-
-.project-popup {
-  min-width: 230px;
-
-  max-width: 280px;
-}
-
-
-/* =========================================
-   PROJECT TITLE
-========================================= */
-
-.project-popup h3 {
-  margin: 0 0 8px 0;
-
-  color: #087f91;
-
-  font-size: 17px;
-
-  line-height: 1.25;
-}
-
-
-/* =========================================
-   PROJECT DESCRIPTION
-========================================= */
-
-.project-popup p {
-  margin: 0;
-
-  font-size: 14px;
-
-  line-height: 1.45;
-
-  color: #333333;
-}
-
-
-/* =========================================
-   LEAFLET POPUP
-========================================= */
-
-.leaflet-popup-content {
-  margin: 14px 16px;
-}
-
-
-.leaflet-popup-content-wrapper {
-  border-radius: 8px;
-}
-
-
-/* =========================================
-   LEAFLET POPUP TIP
-========================================= */
-
-.leaflet-popup-tip {
-  box-shadow:
-    2px 2px 4px
-    rgba(0, 0, 0, 0.1);
-}
-
-
-/* =========================================
-   PROJECT HOVER LABELS
+   PROJECT HOVER TOOLTIP
 ========================================= */
 
 .project-tooltip {
@@ -301,13 +209,11 @@ main {
   color: white;
 
   border: none;
-
   border-radius: 6px;
 
   padding: 7px 10px;
 
   font-size: 13px;
-
   font-weight: bold;
 
   white-space: nowrap;
@@ -318,449 +224,48 @@ main {
 }
 
 
-/* Tooltip arrow */
-
 .leaflet-tooltip-right.project-tooltip::before {
   border-right-color: #087f91;
 }
 
 
 /* =========================================
-   MAP LEGEND
+   PROJECT POPUPS
 ========================================= */
 
-.map-legend {
-  background:
-    rgba(255, 255, 255, 0.94);
-
-  padding: 12px 14px;
-
-  border-radius: 8px;
-
-  color: #333333;
-
-  font-size: 12px;
-
-  line-height: 1.3;
-
-  box-shadow:
-    0 2px 8px
-    rgba(0, 0, 0, 0.22);
-
-  min-width: 175px;
+.project-popup {
+  min-width: 230px;
+  max-width: 280px;
 }
 
 
-.legend-title {
+.project-popup h3 {
+  margin: 0 0 8px 0;
+
   color: #087f91;
+
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+
+.project-popup p {
+  margin: 0;
+
+  color: #333333;
 
   font-size: 14px;
-
-  font-weight: bold;
-
-  margin-bottom: 3px;
-}
-
-
-.legend-instructions {
-  color: #777777;
-
-  font-size: 11px;
-
-  margin-bottom: 9px;
-
-  padding-bottom: 7px;
-
-  border-bottom:
-    1px solid #dddddd;
-}
-
-
-.legend-row {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  margin: 6px 0;
-}
-
-
-.legend-dot {
-  display: inline-block;
-
-  width: 12px;
-  height: 12px;
-
-  border-radius: 50%;
-
-  border: 2px solid white;
-
-  box-shadow:
-    0 1px 3px
-    rgba(0, 0, 0, 0.35);
-
-  flex-shrink: 0;
-}
-
-
-.legend-dot.teal {
-  background: #087f91;
-}
-
-
-.legend-dot.orange {
-  background: #f28c28;
-}
-
-
-.legend-line {
-  display: inline-block;
-
-  width: 22px;
-  height: 0;
-
-  border-top:
-    4px solid #f28c28;
-
-  flex-shrink: 0;
-}
-
-
-/* =========================================
-   WATERSHED-WIDE PROGRAMS PANEL
-========================================= */
-
-.programs-panel {
-  width: 275px;
-
-  background:
-    rgba(255, 255, 255, 0.96);
-
-  border-radius: 10px;
-
-  overflow: hidden;
-
-  color: #333333;
-
-  box-shadow:
-    0 3px 12px
-    rgba(0, 0, 0, 0.25);
-}
-
-
-/* =========================================
-   PANEL HEADER
-========================================= */
-
-.programs-header {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  padding: 12px 13px;
-
-  background: #087f91;
-
-  color: white;
-}
-
-
-.programs-title {
-  font-size: 15px;
-
-  font-weight: bold;
-}
-
-
-.programs-subtitle {
-  margin-top: 2px;
-
-  font-size: 10px;
-
-  opacity: 0.8;
-}
-
-
-/* =========================================
-   COLLAPSE BUTTON
-========================================= */
-
-.programs-toggle {
-  width: 25px;
-  height: 25px;
-
-  padding: 0;
-
-  border: 1px solid
-    rgba(255, 255, 255, 0.6);
-
-  border-radius: 50%;
-
-  background:
-    rgba(255, 255, 255, 0.12);
-
-  color: white;
-
-  font-size: 18px;
-
-  line-height: 20px;
-
-  cursor: pointer;
-
-  flex-shrink: 0;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
-
-
-.programs-toggle:hover {
-  background:
-    rgba(255, 255, 255, 0.25);
-
-  transform: scale(1.08);
-}
-
-
-/* =========================================
-   PROGRAM LIST
-========================================= */
-
-.programs-content {
-  display: block;
-}
-
-
-.program-item {
-  border-bottom:
-    1px solid #e5e5e5;
-}
-
-
-.program-item:last-child {
-  border-bottom: none;
-}
-
-
-/* =========================================
-   PROGRAM BUTTON
-========================================= */
-
-.program-button {
-  display: grid;
-
-  grid-template-columns:
-    12px 1fr 16px;
-
-  align-items: center;
-
-  gap: 9px;
-
-  width: 100%;
-
-  padding: 11px 12px;
-
-  border: none;
-
-  background: white;
-
-  color: #333333;
-
-  font-family: inherit;
-
-  font-size: 12px;
-
-  font-weight: bold;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-
-.program-button:hover {
-  background: #f1f8f9;
-
-  color: #087f91;
-}
-
-
-/* =========================================
-   LITTLE PROGRAM DOT
-========================================= */
-
-.program-dot {
-  width: 9px;
-  height: 9px;
-
-  border-radius: 50%;
-
-  background: #087f91;
-}
-
-
-/* =========================================
-   PLUS / MINUS
-========================================= */
-
-.program-arrow {
-  color: #087f91;
-
-  font-size: 16px;
-
-  font-weight: normal;
-
-  text-align: center;
-}
-
-
-/* =========================================
-   DESCRIPTION
-========================================= */
-
-.program-description {
-  display: none;
-
-  padding:
-    0 15px 13px 33px;
-
-  color: #555555;
-
-  font-size: 11px;
-
   line-height: 1.45;
 }
 
 
-.program-item.open
-.program-description {
-  display: block;
+.leaflet-popup-content {
+  margin: 14px 16px;
 }
 
 
-.program-item.open
-.program-button {
-  color: #087f91;
-
-  background: #f1f8f9;
-}
-
-
-/* =========================================
-   COLLAPSED PROGRAM PANEL
-========================================= */
-
-.programs-panel.collapsed {
-  width: 230px;
-}
-
-
-/* =========================================
-   MAP LAYER SWITCHER
-========================================= */
-
-.leaflet-control-layers {
-  min-width: 155px;
-
-  padding: 11px 13px;
-
-  border: none !important;
-
-  border-radius: 10px;
-
-  background:
-    rgba(255, 255, 255, 0.96);
-
-  color: #333333;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  box-shadow:
-    0 3px 12px
-    rgba(0, 0, 0, 0.25);
-}
-
-
-/* =========================================
-   MAP LAYERS TITLE
-========================================= */
-
-.leaflet-control-layers::before {
-  content: "Map Layers";
-
-  display: block;
-
-  margin-bottom: 7px;
-
-  padding-bottom: 6px;
-
-  border-bottom:
-    1px solid #dddddd;
-
-  color: #087f91;
-
-  font-size: 14px;
-
-  font-weight: bold;
-}
-
-
-/* =========================================
-   MAP LAYER OPTIONS
-========================================= */
-
-.leaflet-control-layers-base label {
-  display: block;
-
-  margin: 7px 0;
-
-  color: #333333;
-
-  font-size: 12px;
-
-  font-weight: 500;
-
-  cursor: pointer;
-}
-
-
-.leaflet-control-layers-base label:hover {
-  color: #087f91;
-}
-
-
-/* =========================================
-   MAP LAYER RADIO BUTTONS
-========================================= */
-
-.leaflet-control-layers-base input {
-  margin-right: 7px;
-
-  accent-color: #087f91;
-
-  cursor: pointer;
-}
-
-
-/* =========================================
-   REMOVE UNNECESSARY SEPARATOR
-========================================= */
-
-.leaflet-control-layers-separator {
-  display: none;
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
 }
 
 
@@ -802,8 +307,6 @@ main {
 }
 
 
-/* Placeholder icon */
-
 .photo-placeholder-icon {
   margin-bottom: 5px;
 
@@ -813,24 +316,15 @@ main {
 }
 
 
-/* Placeholder text */
-
 .photo-placeholder-text {
   font-size: 12px;
   font-weight: bold;
-
-  letter-spacing: 0.2px;
 }
 
 
 /* =========================================
-   PROJECT DESCRIPTION
+   PROJECT DESCRIPTION + RESOURCES
 ========================================= */
-
-.project-description {
-  margin-top: 4px;
-}
-
 
 .project-description p {
   margin: 0;
@@ -842,16 +336,13 @@ main {
 }
 
 
-/* =========================================
-   PROJECT RESOURCES
-========================================= */
-
 .project-resources {
   margin-top: 14px;
 
   padding-top: 11px;
 
-  border-top: 1px solid #dddddd;
+  border-top:
+    1px solid #dddddd;
 }
 
 
@@ -876,8 +367,554 @@ main {
   font-style: italic;
 }
 
+
 /* =========================================
-   RESET VIEW BUTTON
+   WATERSHED-WIDE PROGRAMS PANEL
+========================================= */
+
+.leaflet-control.programs-panel {
+  width: 290px;
+
+  margin-top: 12px;
+  margin-left: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  color: #333333;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  box-shadow:
+    0 4px 15px
+    rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================
+   PROGRAM PANEL HEADER
+========================================= */
+
+.leaflet-control.programs-panel
+.programs-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 13px 14px;
+
+  background: #087f91;
+
+  color: white;
+}
+
+
+.leaflet-control.programs-panel
+.programs-title {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+.leaflet-control.programs-panel
+.programs-subtitle {
+  margin-top: 3px;
+
+  color:
+    rgba(255, 255, 255, 0.82);
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   PROGRAM PANEL COLLAPSE
+========================================= */
+
+.leaflet-control.programs-panel
+.programs-toggle {
+  width: 27px;
+  height: 27px;
+
+  padding: 0;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.6);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 18px;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+
+.leaflet-control.programs-panel
+.programs-toggle:hover {
+  background:
+    rgba(255, 255, 255, 0.25);
+
+  transform: scale(1.08);
+}
+
+
+/* =========================================
+   PROGRAM LIST
+========================================= */
+
+.leaflet-control.programs-panel
+.programs-content {
+  display: block;
+
+  background: white;
+}
+
+
+.leaflet-control.programs-panel
+.program-item {
+  border-bottom:
+    1px solid #e5e5e5;
+}
+
+
+.leaflet-control.programs-panel
+.program-item:last-child {
+  border-bottom: none;
+}
+
+
+/* =========================================
+   PROGRAM BUTTON
+========================================= */
+
+.leaflet-control.programs-panel
+.program-button {
+  display: grid;
+
+  grid-template-columns:
+    10px 1fr 18px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  margin: 0;
+
+  padding: 12px 14px;
+
+  border: none;
+
+  background: white;
+
+  color: #333333;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 13px;
+  font-weight: bold;
+
+  line-height: 1.25;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+
+.leaflet-control.programs-panel
+.program-button:hover {
+  background: #edf7f8;
+
+  color: #087f91;
+}
+
+
+/* =========================================
+   PROGRAM DOT + PLUS
+========================================= */
+
+.leaflet-control.programs-panel
+.program-dot {
+  display: block;
+
+  width: 9px;
+  height: 9px;
+
+  background: #087f91;
+
+  border-radius: 50%;
+}
+
+
+.leaflet-control.programs-panel
+.program-arrow {
+  color: #087f91;
+
+  font-size: 17px;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   NORMAL PROGRAM DESCRIPTION
+========================================= */
+
+.leaflet-control.programs-panel
+.program-description {
+  display: none;
+
+  padding:
+    0 15px 14px 34px;
+
+  background: #edf7f8;
+
+  color: #555555;
+
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+
+.leaflet-control.programs-panel
+.program-item.open
+.program-description {
+  display: block;
+}
+
+
+.leaflet-control.programs-panel
+.program-item.open
+.program-button {
+  background: #edf7f8;
+
+  color: #087f91;
+}
+
+
+/* =========================================
+   RICH RIVER WATCH PROGRAM
+========================================= */
+
+.leaflet-control.programs-panel
+.program-rich-content {
+  padding:
+    0 14px 15px 14px;
+}
+
+
+/* =========================================
+   PROGRAM PHOTO PLACEHOLDER
+========================================= */
+
+.program-photo-placeholder {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 125px;
+
+  margin-bottom: 12px;
+
+  box-sizing: border-box;
+
+  background: #dfe3e4;
+
+  border:
+    1px solid #cbd0d1;
+
+  border-radius: 7px;
+
+  color: #777777;
+}
+
+
+.program-photo-icon {
+  margin-bottom: 4px;
+
+  font-size: 24px;
+
+  opacity: 0.65;
+}
+
+
+.program-photo-text {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+
+/* =========================================
+   PROGRAM RICH DESCRIPTION
+========================================= */
+
+.program-rich-description {
+  color: #444444;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   PROGRAM RESOURCES
+========================================= */
+
+.program-resources {
+  margin-top: 12px;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid #d1dddd;
+}
+
+
+.program-resources-title {
+  margin-bottom: 5px;
+
+  color: #087f91;
+
+  font-size: 11px;
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.45px;
+}
+
+
+.program-resource-placeholder {
+  color: #777777;
+
+  font-size: 11px;
+  font-style: italic;
+}
+
+
+/* =========================================
+   COLLAPSED PROGRAM PANEL
+========================================= */
+
+.leaflet-control.programs-panel.collapsed {
+  width: 250px;
+}
+
+
+/* =========================================
+   MAP LEGEND
+========================================= */
+
+.map-legend {
+  min-width: 175px;
+
+  padding: 12px 14px;
+
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  border-radius: 8px;
+
+  color: #333333;
+
+  font-size: 12px;
+  line-height: 1.3;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.22);
+}
+
+
+.legend-title {
+  margin-bottom: 3px;
+
+  color: #087f91;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.legend-instructions {
+  margin-bottom: 9px;
+
+  padding-bottom: 7px;
+
+  border-bottom:
+    1px solid #dddddd;
+
+  color: #777777;
+
+  font-size: 11px;
+}
+
+
+.legend-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 6px 0;
+}
+
+
+.legend-dot {
+  display: inline-block;
+
+  width: 12px;
+  height: 12px;
+
+  border: 2px solid white;
+  border-radius: 50%;
+
+  box-shadow:
+    0 1px 3px
+    rgba(0, 0, 0, 0.35);
+
+  flex-shrink: 0;
+}
+
+
+.legend-dot.teal {
+  background: #087f91;
+}
+
+
+.legend-dot.orange {
+  background: #f28c28;
+}
+
+
+.legend-line {
+  display: inline-block;
+
+  width: 22px;
+
+  border-top:
+    4px solid #f28c28;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================
+   MAP LAYER SWITCHER
+========================================= */
+
+.leaflet-control-layers {
+  min-width: 155px;
+
+  padding: 11px 13px;
+
+  border: none !important;
+
+  border-radius: 10px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  color: #333333;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  box-shadow:
+    0 3px 12px
+    rgba(0, 0, 0, 0.25);
+}
+
+
+.leaflet-control-layers::before {
+  content: "Map Layers";
+
+  display: block;
+
+  margin-bottom: 7px;
+
+  padding-bottom: 6px;
+
+  border-bottom:
+    1px solid #dddddd;
+
+  color: #087f91;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.leaflet-control-layers-base label {
+  display: block;
+
+  margin: 7px 0;
+
+  color: #333333;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+.leaflet-control-layers-base label:hover {
+  color: #087f91;
+}
+
+
+.leaflet-control-layers-base input {
+  margin-right: 7px;
+
+  accent-color: #087f91;
+
+  cursor: pointer;
+}
+
+
+.leaflet-control-layers-separator {
+  display: none;
+}
+
+
+/* =========================================
+   RESET VIEW
 ========================================= */
 
 .reset-view-control {
@@ -890,7 +927,6 @@ main {
   padding: 8px 11px;
 
   border: none;
-
   border-radius: 8px;
 
   background:
@@ -904,7 +940,6 @@ main {
     sans-serif;
 
   font-size: 12px;
-
   font-weight: bold;
 
   cursor: pointer;
@@ -948,4 +983,44 @@ main {
     Arial,
     Helvetica,
     sans-serif;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  header {
+    padding: 10px 12px;
+  }
+
+
+  header h1 {
+    font-size: 21px;
+  }
+
+
+  header p {
+    font-size: 14px;
+  }
+
+
+  .leaflet-control.programs-panel {
+    width: 235px;
+  }
+
+
+  .map-legend {
+    min-width: 145px;
+
+    padding: 9px 10px;
+  }
+
+
+  .leaflet-control-layers {
+    min-width: 130px;
+  }
+
 }
