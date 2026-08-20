@@ -875,3 +875,77 @@ main {
   font-size: 12px;
   font-style: italic;
 }
+
+/* =========================================
+   RESET VIEW BUTTON
+========================================= */
+
+.reset-view-control {
+  margin-left: 12px;
+  margin-bottom: 14px;
+}
+
+
+.reset-view-button {
+  padding: 8px 11px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  color: #087f91;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.22);
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.reset-view-button:hover {
+  background: #edf7f8;
+
+  transform: scale(1.04);
+}
+
+
+/* =========================================
+   SCALE BAR
+========================================= */
+
+.leaflet-control-scale {
+  margin-left: 12px;
+  margin-bottom: 8px;
+}
+
+
+.leaflet-control-scale-line {
+  background:
+    rgba(255, 255, 255, 0.88);
+
+  color: #333333;
+
+  border-color: #555555;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
