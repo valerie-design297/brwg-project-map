@@ -26,30 +26,30 @@ const standardMap = L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     maxZoom: 19,
-
-    attribution:
-      "&copy; OpenStreetMap contributors"
+    attribution: "&copy; OpenStreetMap contributors"
   }
 );
 
 
 // ---------------------------------------------
 // TOPOGRAPHIC MAP
+// Esri World Topographic Map
 // ---------------------------------------------
 
 const topoMap = L.tileLayer(
-  "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
   {
-    maxZoom: 17,
+    maxZoom: 19,
 
     attribution:
-      'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap'
+      "Tiles &copy; Esri"
   }
 );
 
 
 // ---------------------------------------------
 // SATELLITE MAP
+// Esri World Imagery
 // ---------------------------------------------
 
 const satelliteMap = L.tileLayer(
@@ -254,12 +254,7 @@ fetch(hucURL)
     const projects = [
 
 
-      // ---------------------------------------
-      // BLUE RIVER HABITAT RESTORATION
-      // ---------------------------------------
-
       {
-
         name:
           "Blue River Habitat Restoration Project",
 
@@ -269,16 +264,10 @@ fetch(hucURL)
 
         description:
           "This restoration project aims to restore habitat along the Blue River with the goal of improving the overall ecosystem and restoring Gold Medal status to the Blue River below the Dillon Dam."
-
       },
 
 
-      // ---------------------------------------
-      // PERU CREEK MINE RESTORATION
-      // ---------------------------------------
-
       {
-
         name:
           "Peru Creek Mine Restoration",
 
@@ -288,16 +277,10 @@ fetch(hucURL)
 
         description:
           "Under the Snake River Watershed Plan, several mine mitigation projects have taken place in the Peru Creek Drainage."
-
       },
 
 
-      // ---------------------------------------
-      // TEN MILE CREEK
-      // ---------------------------------------
-
       {
-
         name:
           "Ten Mile Creek Restoration Project",
 
@@ -307,16 +290,10 @@ fetch(hucURL)
 
         description:
           "Ten Mile Creek Project addressed severe impacts from development and I-70. This project revitalized this important riparian corridor."
-
       },
 
 
-      // ---------------------------------------
-      // SWAN RIVER
-      // ---------------------------------------
-
       {
-
         name:
           "Swan River Restoration Project",
 
@@ -326,7 +303,6 @@ fetch(hucURL)
 
         description:
           "Dredge mining tailing piles blocking the Swan River were removed, restoring this vital habitat and improving an incredible recreational and educational resource."
-
       }
 
     ];
@@ -402,8 +378,6 @@ fetch(hucURL)
         "click",
         function () {
 
-          // Reset previous marker
-
           if (selectedMarker) {
 
             const oldElement =
@@ -430,8 +404,6 @@ fetch(hucURL)
 
           }
 
-
-          // Highlight clicked marker
 
           const markerElement =
             marker.getElement();
@@ -561,10 +533,6 @@ fetch(hucURL)
           <div class="programs-content">
 
 
-            <!-- ===============================
-                 SUMMIT COUNTY OUTDOOR COALITION
-            ================================ -->
-
             <div class="program-item">
 
               <button
@@ -572,24 +540,20 @@ fetch(hucURL)
                 type="button"
               >
 
-                <span
-                  class="program-dot">
-                </span>
+                <span class="program-dot"></span>
 
                 <span>
                   Summit County Outdoor Coalition
                 </span>
 
-                <span
-                  class="program-arrow">
+                <span class="program-arrow">
                   +
                 </span>
 
               </button>
 
 
-              <div
-                class="program-description">
+              <div class="program-description">
 
                 Part of CPW's Regional Partnership Initiative,
                 SCOC's works to ensure collaborative solutions
@@ -600,10 +564,6 @@ fetch(hucURL)
             </div>
 
 
-            <!-- ===============================
-                 RIVER WATCH
-            ================================ -->
-
             <div class="program-item">
 
               <button
@@ -611,24 +571,20 @@ fetch(hucURL)
                 type="button"
               >
 
-                <span
-                  class="program-dot">
-                </span>
+                <span class="program-dot"></span>
 
                 <span>
                   River Watch: Water Quality Monitoring
                 </span>
 
-                <span
-                  class="program-arrow">
+                <span class="program-arrow">
                   +
                 </span>
 
               </button>
 
 
-              <div
-                class="program-description">
+              <div class="program-description">
 
                 Through CPW's River Watch and our citizen
                 science program BRWG ensures water quality
@@ -639,10 +595,6 @@ fetch(hucURL)
             </div>
 
 
-            <!-- ===============================
-                 EDUCATIONAL PROGRAMMING
-            ================================ -->
-
             <div class="program-item">
 
               <button
@@ -650,24 +602,20 @@ fetch(hucURL)
                 type="button"
               >
 
-                <span
-                  class="program-dot">
-                </span>
+                <span class="program-dot"></span>
 
                 <span>
                   Educational Programming
                 </span>
 
-                <span
-                  class="program-arrow">
+                <span class="program-arrow">
                   +
                 </span>
 
               </button>
 
 
-              <div
-                class="program-description">
+              <div class="program-description">
 
                 BRWG provides environmental and water policy
                 educational programming to adults and youth
@@ -678,10 +626,6 @@ fetch(hucURL)
             </div>
 
 
-            <!-- ===============================
-                 WILDFIRE READY WATERSHEDS
-            ================================ -->
-
             <div class="program-item">
 
               <button
@@ -689,24 +633,20 @@ fetch(hucURL)
                 type="button"
               >
 
-                <span
-                  class="program-dot">
-                </span>
+                <span class="program-dot"></span>
 
                 <span>
                   Wildfire Ready Watersheds
                 </span>
 
-                <span
-                  class="program-arrow">
+                <span class="program-arrow">
                   +
                 </span>
 
               </button>
 
 
-              <div
-                class="program-description">
+              <div class="program-description">
 
                 BRWG has secured funding to bring a Wildfire
                 Ready Action Plan to our Community to prepare
@@ -717,10 +657,6 @@ fetch(hucURL)
             </div>
 
 
-            <!-- ===============================
-                 BLUE RIVER CLEAN-UP FESTIVAL
-            ================================ -->
-
             <div class="program-item">
 
               <button
@@ -728,24 +664,20 @@ fetch(hucURL)
                 type="button"
               >
 
-                <span
-                  class="program-dot">
-                </span>
+                <span class="program-dot"></span>
 
                 <span>
                   Blue River Clean-up Festival
                 </span>
 
-                <span
-                  class="program-arrow">
+                <span class="program-arrow">
                   +
                 </span>
 
               </button>
 
 
-              <div
-                class="program-description">
+              <div class="program-description">
 
                 BRWG's annual county-wide River Cleanup
                 brought 215 volunteers together to remove
@@ -760,10 +692,6 @@ fetch(hucURL)
         `;
 
 
-        // -------------------------------------
-        // PREVENT PANEL FROM MOVING MAP
-        // -------------------------------------
-
         L.DomEvent.disableClickPropagation(
           div
         );
@@ -772,10 +700,6 @@ fetch(hucURL)
           div
         );
 
-
-        // -------------------------------------
-        // EXPAND / COLLAPSE PROGRAM ITEMS
-        // -------------------------------------
 
         const programButtons =
           div.querySelectorAll(
@@ -801,8 +725,6 @@ fetch(hucURL)
                     "open"
                   );
 
-
-                // Close all items
 
                 div
                   .querySelectorAll(
@@ -836,8 +758,6 @@ fetch(hucURL)
                   );
 
 
-                // Open clicked item
-
                 if (!currentlyOpen) {
 
                   item
@@ -868,10 +788,6 @@ fetch(hucURL)
           }
         );
 
-
-        // -------------------------------------
-        // COLLAPSE WHOLE PANEL
-        // -------------------------------------
 
         const toggle =
           div.querySelector(
