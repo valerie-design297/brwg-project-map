@@ -762,3 +762,116 @@ main {
 .leaflet-control-layers-separator {
   display: none;
 }
+
+
+/* =========================================
+   EXPANDED PROJECT POPUP
+========================================= */
+
+.project-popup-expanded {
+  width: 330px;
+  max-width: 330px;
+}
+
+
+/* =========================================
+   PROJECT PHOTO PLACEHOLDER
+========================================= */
+
+.project-photo-placeholder {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 155px;
+
+  margin-top: 11px;
+  margin-bottom: 13px;
+
+  box-sizing: border-box;
+
+  background: #e6e6e6;
+
+  border: 1px solid #d2d2d2;
+  border-radius: 8px;
+
+  color: #777777;
+}
+
+
+/* Placeholder icon */
+
+.photo-placeholder-icon {
+  margin-bottom: 5px;
+
+  font-size: 27px;
+
+  opacity: 0.65;
+}
+
+
+/* Placeholder text */
+
+.photo-placeholder-text {
+  font-size: 12px;
+  font-weight: bold;
+
+  letter-spacing: 0.2px;
+}
+
+
+/* =========================================
+   PROJECT DESCRIPTION
+========================================= */
+
+.project-description {
+  margin-top: 4px;
+}
+
+
+.project-description p {
+  margin: 0;
+
+  color: #333333;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   PROJECT RESOURCES
+========================================= */
+
+.project-resources {
+  margin-top: 14px;
+
+  padding-top: 11px;
+
+  border-top: 1px solid #dddddd;
+}
+
+
+.resources-title {
+  margin-bottom: 6px;
+
+  color: #087f91;
+
+  font-size: 12px;
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+
+.resource-placeholder {
+  color: #888888;
+
+  font-size: 12px;
+  font-style: italic;
+}
