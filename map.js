@@ -149,10 +149,6 @@ fetch(hucURL)
 
     const projects = [
 
-      // ---------------------------------------
-      // BLUE RIVER HABITAT RESTORATION
-      // ---------------------------------------
-
       {
         name:
           "Blue River Habitat Restoration Project",
@@ -167,10 +163,6 @@ fetch(hucURL)
           "The Blue River Habitat Restoration Project aims to improve river and riparian habitat below Dillon Dam and help restore the health of the Blue River fishery."
       },
 
-
-      // ---------------------------------------
-      // PERU CREEK
-      // ---------------------------------------
 
       {
         name:
@@ -187,10 +179,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // SWAN RIVER
-      // ---------------------------------------
-
       {
         name:
           "Swan River Restoration Project",
@@ -205,10 +193,6 @@ fetch(hucURL)
           "This multi-phase restoration project addresses damage caused by historic dredge mining in the upper Swan River drainage and restores river habitat and ecological function."
       },
 
-
-      // ---------------------------------------
-      // TENMILE CREEK
-      // ---------------------------------------
 
       {
         name:
@@ -225,15 +209,6 @@ fetch(hucURL)
       },
 
 
-      // =======================================
-      // REMAINING PROGRAMS
-      // =======================================
-
-
-      // ---------------------------------------
-      // EDUCATIONAL PROGRAMMING
-      // ---------------------------------------
-
       {
         name:
           "Educational Programming",
@@ -241,8 +216,6 @@ fetch(hucURL)
         type:
           "Watershed-Wide Program",
 
-        // Representative location near
-        // Silverthorne
         lat: 39.640,
         lng: -106.095,
 
@@ -254,10 +227,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // RIVER WATCH
-      // ---------------------------------------
-
       {
         name:
           "River Watch",
@@ -265,8 +234,6 @@ fetch(hucURL)
         type:
           "Water Quality Monitoring",
 
-        // Representative location along
-        // the Blue River
         lat: 39.665,
         lng: -106.083,
 
@@ -278,10 +245,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // WILDFIRE READY WATERSHEDS
-      // ---------------------------------------
-
       {
         name:
           "Wildfire Ready Watersheds",
@@ -289,8 +252,6 @@ fetch(hucURL)
         type:
           "Watershed Planning",
 
-        // Representative central-watershed
-        // location
         lat: 39.610,
         lng: -106.155,
 
@@ -302,10 +263,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // BLUE RIVER CLEAN-UP FESTIVAL
-      // ---------------------------------------
-
       {
         name:
           "Blue River Clean-Up Festival",
@@ -313,8 +270,6 @@ fetch(hucURL)
         type:
           "Community Event",
 
-        // Representative point at/near
-        // Frisco Marina
         lat: 39.574,
         lng: -106.098,
 
@@ -345,9 +300,28 @@ fetch(hucURL)
       ).addTo(map);
 
 
-      // ---------------------------------------
-      // BUILD OPTIONAL NOTE
-      // ---------------------------------------
+      // =======================================
+      // HOVER LABEL
+      // =======================================
+
+      marker.bindTooltip(
+        project.name,
+        {
+          direction: "right",
+
+          offset: [15, 0],
+
+          opacity: 1,
+
+          className:
+            "project-tooltip"
+        }
+      );
+
+
+      // =======================================
+      // OPTIONAL NOTE
+      // =======================================
 
       let noteHTML = "";
 
@@ -362,9 +336,9 @@ fetch(hucURL)
       }
 
 
-      // ---------------------------------------
+      // =======================================
       // POPUP
-      // ---------------------------------------
+      // =======================================
 
       marker.bindPopup(`
         <div class="project-popup">
@@ -387,13 +361,14 @@ fetch(hucURL)
       `);
 
 
-      // ---------------------------------------
+      // =======================================
       // CLICK MARKER
-      // ---------------------------------------
+      // =======================================
 
       marker.on("click", function () {
 
-        // Reset previously selected marker
+        // Reset old marker
+
         if (selectedMarker) {
 
           const oldElement =
@@ -447,9 +422,9 @@ fetch(hucURL)
       });
 
 
-      // ---------------------------------------
+      // =======================================
       // POPUP CLOSED
-      // ---------------------------------------
+      // =======================================
 
       marker.on("popupclose", function () {
 
