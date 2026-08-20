@@ -1024,3 +1024,24 @@ main {
   }
 
 }
+
+/* =========================================
+   ACTIVE / OPEN PROGRAM ITEM
+========================================= */
+
+.leaflet-control.programs-panel
+.program-item.open
+.program-button {
+  background: #e6f3f5;
+
+  color: #087f91;
+}
+
+
+/* Thin teal accent bar on active item */
+
+.leaflet-control.programs-panel
+.program-item.open {
+  box-shadow:
+    inset 3px 0 0 #087f91;
+}
