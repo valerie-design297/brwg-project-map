@@ -28,6 +28,7 @@ L.tileLayer(
 
 // ---------------------------------------------
 // BLUE RIVER HUC8
+// HUC8: 14010002
 // ---------------------------------------------
 
 const hucURL =
@@ -38,6 +39,10 @@ const hucURL =
   "&outSR=4326" +
   "&f=geojson";
 
+
+// ---------------------------------------------
+// LOAD WATERSHED
+// ---------------------------------------------
 
 fetch(hucURL)
 
@@ -139,14 +144,21 @@ fetch(hucURL)
 
 
     // =========================================
-    // PROJECT DATA
+    // PROJECT + PROGRAM DATA
     // =========================================
 
     const projects = [
 
+      // ---------------------------------------
+      // BLUE RIVER HABITAT RESTORATION
+      // ---------------------------------------
+
       {
         name:
           "Blue River Habitat Restoration Project",
+
+        type:
+          "Restoration Project",
 
         lat: 39.627140,
         lng: -106.071730,
@@ -156,9 +168,16 @@ fetch(hucURL)
       },
 
 
+      // ---------------------------------------
+      // PERU CREEK
+      // ---------------------------------------
+
       {
         name:
           "Peru Creek Mine Restoration",
+
+        type:
+          "Restoration Project",
 
         lat: 39.603,
         lng: -105.995,
@@ -168,9 +187,16 @@ fetch(hucURL)
       },
 
 
+      // ---------------------------------------
+      // SWAN RIVER
+      // ---------------------------------------
+
       {
         name:
           "Swan River Restoration Project",
+
+        type:
+          "Restoration Project",
 
         lat: 39.504,
         lng: -106.001,
@@ -180,15 +206,123 @@ fetch(hucURL)
       },
 
 
+      // ---------------------------------------
+      // TENMILE CREEK
+      // ---------------------------------------
+
       {
         name:
           "Tenmile Creek Restoration Project",
+
+        type:
+          "Restoration Project",
 
         lat: 39.575,
         lng: -106.275,
 
         description:
           "BRWG and the U.S. Forest Service restored a heavily impacted section of Tenmile Creek, improving stream habitat, wetlands, floodplain connectivity, recreation, and public access."
+      },
+
+
+      // =======================================
+      // REMAINING PROGRAMS
+      // =======================================
+
+
+      // ---------------------------------------
+      // EDUCATIONAL PROGRAMMING
+      // ---------------------------------------
+
+      {
+        name:
+          "Educational Programming",
+
+        type:
+          "Watershed-Wide Program",
+
+        // Representative location near
+        // Silverthorne
+        lat: 39.640,
+        lng: -106.095,
+
+        description:
+          "BRWG partners with organizations throughout Summit County to provide educational programs and presentations focused on local watershed issues, water resources, and stewardship.",
+
+        note:
+          "This is a watershed-wide program; the marker represents the program rather than a single project site."
+      },
+
+
+      // ---------------------------------------
+      // RIVER WATCH
+      // ---------------------------------------
+
+      {
+        name:
+          "River Watch",
+
+        type:
+          "Water Quality Monitoring",
+
+        // Representative location along
+        // the Blue River
+        lat: 39.665,
+        lng: -106.083,
+
+        description:
+          "BRWG participates in Colorado's River Watch program, with staff and volunteers collecting water-quality data that contribute to a statewide monitoring database.",
+
+        note:
+          "Monitoring occurs at multiple locations throughout the watershed; this marker is representative."
+      },
+
+
+      // ---------------------------------------
+      // WILDFIRE READY WATERSHEDS
+      // ---------------------------------------
+
+      {
+        name:
+          "Wildfire Ready Watersheds",
+
+        type:
+          "Watershed Planning",
+
+        // Representative central-watershed
+        // location
+        lat: 39.610,
+        lng: -106.155,
+
+        description:
+          "The Wildfire Ready Watersheds program helps identify vulnerable infrastructure and ecosystems and develops strategies to prepare the Blue River watershed for wildfire and post-fire flooding.",
+
+        note:
+          "This program covers the broader watershed; the marker is a representative location."
+      },
+
+
+      // ---------------------------------------
+      // BLUE RIVER CLEAN-UP FESTIVAL
+      // ---------------------------------------
+
+      {
+        name:
+          "Blue River Clean-Up Festival",
+
+        type:
+          "Community Event",
+
+        // Representative point at/near
+        // Frisco Marina
+        lat: 39.574,
+        lng: -106.098,
+
+        description:
+          "BRWG's annual Blue River Clean-Up Festival brings volunteers together across Summit County to remove trash from waterways and surrounding lands while celebrating and learning about the Blue River watershed.",
+
+        note:
+          "Cleanup activities occur throughout Summit County; this marker represents the festival's Frisco area activities."
       }
 
     ];
@@ -212,11 +346,32 @@ fetch(hucURL)
 
 
       // ---------------------------------------
+      // BUILD OPTIONAL NOTE
+      // ---------------------------------------
+
+      let noteHTML = "";
+
+      if (project.note) {
+
+        noteHTML = `
+          <p class="project-note">
+            ${project.note}
+          </p>
+        `;
+
+      }
+
+
+      // ---------------------------------------
       // POPUP
       // ---------------------------------------
 
       marker.bindPopup(`
         <div class="project-popup">
+
+          <div class="project-type">
+            ${project.type}
+          </div>
 
           <h3>
             ${project.name}
@@ -225,6 +380,8 @@ fetch(hucURL)
           <p>
             ${project.description}
           </p>
+
+          ${noteHTML}
 
         </div>
       `);
@@ -236,7 +393,7 @@ fetch(hucURL)
 
       marker.on("click", function () {
 
-        // Reset old marker
+        // Reset previously selected marker
         if (selectedMarker) {
 
           const oldElement =
@@ -250,9 +407,11 @@ fetch(hucURL)
               );
 
             if (oldCircle) {
+
               oldCircle.classList.remove(
                 "selected"
               );
+
             }
 
           }
@@ -273,7 +432,11 @@ fetch(hucURL)
             );
 
           if (circle) {
-            circle.classList.add("selected");
+
+            circle.classList.add(
+              "selected"
+            );
+
           }
 
         }
@@ -301,16 +464,20 @@ fetch(hucURL)
             );
 
           if (circle) {
+
             circle.classList.remove(
               "selected"
             );
+
           }
 
         }
 
 
         if (selectedMarker === marker) {
+
           selectedMarker = null;
+
         }
 
       });
@@ -318,6 +485,7 @@ fetch(hucURL)
     });
 
 
+    // Keep watershed boundary visible
     watershedLayer.bringToFront();
 
   })
