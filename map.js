@@ -142,10 +142,10 @@ fetch(hucURL)
 
 
     // =========================================
-    // MAPPED PROJECTS / PROGRAMS
+    // MAPPED PROJECTS
     //
-    // These are the items that remain as
-    // geographic dots on the map.
+    // Only projects with specific geographic
+    // locations appear as dots on the map.
     // =========================================
 
     const projects = [
@@ -159,18 +159,6 @@ fetch(hucURL)
 
         description:
           "This restoration project aims to restore habitat along the Blue River with the goal of improving the overall ecosystem and restoring Gold Medal status to the Blue River below the Dillon Dam."
-      },
-
-
-      {
-        name:
-          "River Watch: Water Quality Monitoring",
-
-        lat: 39.665,
-        lng: -106.083,
-
-        description:
-          "Through CPW's River Watch and our citizen science program BRWG ensures water quality is regularly monitored."
       },
 
 
@@ -434,6 +422,41 @@ fetch(hucURL)
 
 
           <!-- =================================
+               RIVER WATCH
+          ================================== -->
+
+          <div class="program-item">
+
+            <button
+              class="program-button"
+              type="button"
+            >
+
+              <span class="program-dot"></span>
+
+              <span>
+                River Watch: Water Quality Monitoring
+              </span>
+
+              <span class="program-arrow">
+                +
+              </span>
+
+            </button>
+
+
+            <div class="program-description">
+
+              Through CPW's River Watch and our citizen
+              science program BRWG ensures water quality
+              is regularly monitored.
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================
                EDUCATIONAL PROGRAMMING
           ================================== -->
 
@@ -578,7 +601,7 @@ fetch(hucURL)
               );
 
 
-            // Close all items
+            // Close all program items
 
             div
               .querySelectorAll(
@@ -734,7 +757,7 @@ fetch(hucURL)
           <span class="legend-dot teal"></span>
 
           <span>
-            Mapped project or program
+            Mapped project
           </span>
 
         </div>
