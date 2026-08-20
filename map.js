@@ -13,6 +13,10 @@ const map = L.map("map", {
 }).setView([39.55, -106.15], 9);
 
 
+// Store watershed bounds for reset button
+let watershedBounds = null;
+
+
 // =============================================
 // BASEMAPS
 // =============================================
@@ -86,6 +90,84 @@ L.control.layers(
 
 
 // =============================================
+// SCALE BAR
+// =============================================
+
+L.control.scale({
+  position: "bottomleft",
+  metric: true,
+  imperial: true,
+  maxWidth: 130
+}).addTo(map);
+
+
+// =============================================
+// RESET VIEW BUTTON
+// =============================================
+
+const resetControl = L.control({
+  position: "bottomleft"
+});
+
+
+resetControl.onAdd = function () {
+
+  const div = L.DomUtil.create(
+    "div",
+    "reset-view-control"
+  );
+
+
+  div.innerHTML = `
+    <button
+      class="reset-view-button"
+      type="button"
+      title="Return to the full Blue River watershed"
+    >
+      ↺ Reset View
+    </button>
+  `;
+
+
+  // Stop button clicks from moving the map
+  L.DomEvent.disableClickPropagation(div);
+  L.DomEvent.disableScrollPropagation(div);
+
+
+  const button =
+    div.querySelector(
+      ".reset-view-button"
+    );
+
+
+  button.addEventListener(
+    "click",
+    function () {
+
+      if (watershedBounds) {
+
+        map.fitBounds(
+          watershedBounds,
+          {
+            padding: [35, 35]
+          }
+        );
+
+      }
+
+    }
+  );
+
+
+  return div;
+
+};
+
+
+resetControl.addTo(map);
+
+
+// =============================================
 // BLUE RIVER HUC8
 // HUC8: 14010002
 // =============================================
@@ -108,10 +190,12 @@ fetch(hucURL)
   .then(response => {
 
     if (!response.ok) {
+
       throw new Error(
         "USGS request failed: " +
         response.status
       );
+
     }
 
     return response.json();
@@ -144,13 +228,19 @@ fetch(hucURL)
     L.geoJSON(
       outsideMask,
       {
+
         style: {
+
           fillColor: "#808080",
+
           fillOpacity: 0.45,
+
           stroke: false
+
         },
 
         interactive: false
+
       }
 
     ).addTo(map);
@@ -164,12 +254,19 @@ fetch(hucURL)
       L.geoJSON(
         data,
         {
+
           style: {
+
             color: "#f28c28",
+
             weight: 5,
+
             opacity: 1,
+
             fillOpacity: 0
+
           }
+
         }
       ).addTo(map);
 
@@ -178,11 +275,14 @@ fetch(hucURL)
 
 
     // =========================================
-    // ZOOM TO WATERSHED
+    // STORE + ZOOM TO WATERSHED
     // =========================================
 
     const bounds =
       watershedLayer.getBounds();
+
+
+    watershedBounds = bounds;
 
 
     if (bounds.isValid()) {
@@ -327,7 +427,7 @@ fetch(hucURL)
 
 
       // =======================================
-      // SPECIAL EXPANDED POPUP
+      // EXPANDED TEST POPUP
       // BLUE RIVER HABITAT RESTORATION
       // =======================================
 
@@ -344,8 +444,6 @@ fetch(hucURL)
             </h3>
 
 
-            <!-- PHOTO PLACEHOLDER -->
-
             <div class="project-photo-placeholder">
 
               <div class="photo-placeholder-icon">
@@ -359,8 +457,6 @@ fetch(hucURL)
             </div>
 
 
-            <!-- DESCRIPTION -->
-
             <div class="project-description">
 
               <p>
@@ -369,8 +465,6 @@ fetch(hucURL)
 
             </div>
 
-
-            <!-- RESOURCES -->
 
             <div class="project-resources">
 
@@ -391,7 +485,7 @@ fetch(hucURL)
 
 
       // =======================================
-      // NORMAL POPUP FOR OTHER PROJECTS
+      // NORMAL POPUPS
       // =======================================
 
       else {
@@ -793,6 +887,8 @@ fetch(hucURL)
                   );
 
 
+                // Close all items
+
                 div
                   .querySelectorAll(
                     ".program-item"
@@ -823,6 +919,8 @@ fetch(hucURL)
                     }
                   );
 
+
+                // Open selected item
 
                 if (!currentlyOpen) {
 
