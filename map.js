@@ -144,140 +144,159 @@ fetch(hucURL)
 
 
     // =========================================
-    // PROJECT + PROGRAM DATA
+    // PROJECTS + PROGRAMS
+    //
+    // Text below matches the original
+    // BRWG static map.
+    //
+    // Coordinates are temporary and can be
+    // replaced with exact locations later.
     // =========================================
 
     const projects = [
+
+
+      // ---------------------------------------
+      // SUMMIT COUNTY OUTDOOR COALITION
+      // ---------------------------------------
+
+      {
+        name:
+          "Summit County Outdoor Coalition",
+
+        lat: 39.655,
+        lng: -106.180,
+
+        description:
+          "Part of CPW's Regional Partnership Initiative, SCOC works to ensure collaborative solutions for conservation and recreation."
+      },
+
+
+      // ---------------------------------------
+      // BLUE RIVER HABITAT RESTORATION
+      // ---------------------------------------
 
       {
         name:
           "Blue River Habitat Restoration Project",
 
-        type:
-          "Restoration Project",
-
         lat: 39.627140,
         lng: -106.071730,
 
         description:
-          "The Blue River Habitat Restoration Project aims to improve river and riparian habitat below Dillon Dam and help restore the health of the Blue River fishery."
+          "This restoration project aims to restore habitat along the Blue River with the goal of improving the overall ecosystem and restoring Gold Medal status to the Blue River below the Dillon Dam."
       },
 
 
-      {
-        name:
-          "Peru Creek Mine Restoration",
-
-        type:
-          "Restoration Project",
-
-        lat: 39.603,
-        lng: -105.995,
-
-        description:
-          "Under the Snake River Watershed Plan, several mine mitigation and restoration projects have taken place in the Peru Creek drainage."
-      },
-
+      // ---------------------------------------
+      // RIVER WATCH
+      // ---------------------------------------
 
       {
         name:
-          "Swan River Restoration Project",
-
-        type:
-          "Restoration Project",
-
-        lat: 39.504,
-        lng: -106.001,
-
-        description:
-          "This multi-phase restoration project addresses damage caused by historic dredge mining in the upper Swan River drainage and restores river habitat and ecological function."
-      },
-
-
-      {
-        name:
-          "Tenmile Creek Restoration Project",
-
-        type:
-          "Restoration Project",
-
-        lat: 39.575,
-        lng: -106.275,
-
-        description:
-          "BRWG and the U.S. Forest Service restored a heavily impacted section of Tenmile Creek, improving stream habitat, wetlands, floodplain connectivity, recreation, and public access."
-      },
-
-
-      {
-        name:
-          "Educational Programming",
-
-        type:
-          "Watershed-Wide Program",
-
-        lat: 39.640,
-        lng: -106.095,
-
-        description:
-          "BRWG partners with organizations throughout Summit County to provide educational programs and presentations focused on local watershed issues, water resources, and stewardship.",
-
-        note:
-          "This is a watershed-wide program; the marker represents the program rather than a single project site."
-      },
-
-
-      {
-        name:
-          "River Watch",
-
-        type:
-          "Water Quality Monitoring",
+          "River Watch: Water Quality Monitoring",
 
         lat: 39.665,
         lng: -106.083,
 
         description:
-          "BRWG participates in Colorado's River Watch program, with staff and volunteers collecting water-quality data that contribute to a statewide monitoring database.",
-
-        note:
-          "Monitoring occurs at multiple locations throughout the watershed; this marker is representative."
+          "Through CPW's River Watch and our citizen science program BRWG ensures water quality is regularly monitored."
       },
 
+
+      // ---------------------------------------
+      // EDUCATIONAL PROGRAMMING
+      // ---------------------------------------
+
+      {
+        name:
+          "Educational Programming",
+
+        lat: 39.640,
+        lng: -106.095,
+
+        description:
+          "BRWG provides environmental and water policy educational programming to adults and youth throughout the year in Summit County."
+      },
+
+
+      // ---------------------------------------
+      // WILDFIRE READY WATERSHEDS
+      // ---------------------------------------
 
       {
         name:
           "Wildfire Ready Watersheds",
 
-        type:
-          "Watershed Planning",
-
         lat: 39.610,
         lng: -106.155,
 
         description:
-          "The Wildfire Ready Watersheds program helps identify vulnerable infrastructure and ecosystems and develops strategies to prepare the Blue River watershed for wildfire and post-fire flooding.",
-
-        note:
-          "This program covers the broader watershed; the marker is a representative location."
+          "BRWG has secured funding to bring a Wildfire Ready Action Plan to our Community to prepare for pre and post fire impacts."
       },
 
 
+      // ---------------------------------------
+      // BLUE RIVER CLEAN-UP FESTIVAL
+      // ---------------------------------------
+
       {
         name:
-          "Blue River Clean-Up Festival",
-
-        type:
-          "Community Event",
+          "Blue River Clean-up Festival",
 
         lat: 39.574,
         lng: -106.098,
 
         description:
-          "BRWG's annual Blue River Clean-Up Festival brings volunteers together across Summit County to remove trash from waterways and surrounding lands while celebrating and learning about the Blue River watershed.",
+          "BRWG's annual county-wide River Cleanup brought 215 volunteers together to remove 4000 lbs of trash from our rivers."
+      },
 
-        note:
-          "Cleanup activities occur throughout Summit County; this marker represents the festival's Frisco area activities."
+
+      // ---------------------------------------
+      // PERU CREEK MINE RESTORATION
+      // ---------------------------------------
+
+      {
+        name:
+          "Peru Creek Mine Restoration",
+
+        lat: 39.603,
+        lng: -105.995,
+
+        description:
+          "Under the Snake River Watershed Plan, several mine mitigation projects have taken place in the Peru Creek Drainage."
+      },
+
+
+      // ---------------------------------------
+      // TEN MILE CREEK
+      // ---------------------------------------
+
+      {
+        name:
+          "Ten Mile Creek Restoration Project",
+
+        lat: 39.575,
+        lng: -106.275,
+
+        description:
+          "Ten Mile Creek Project addressed severe impacts from development and I-70. This project revitalized this important riparian corridor."
+      },
+
+
+      // ---------------------------------------
+      // SWAN RIVER
+      // ---------------------------------------
+
+      {
+        name:
+          "Swan River Restoration Project",
+
+        lat: 39.504,
+        lng: -106.001,
+
+        description:
+          "Dredge mining tailing piles blocking the Swan River were removed, restoring this vital habitat and improving an incredible recreational and educational resource."
       }
 
     ];
@@ -300,9 +319,9 @@ fetch(hucURL)
       ).addTo(map);
 
 
-      // ---------------------------------------
+      // =======================================
       // HOVER LABEL
-      // ---------------------------------------
+      // =======================================
 
       marker.bindTooltip(
         project.name,
@@ -315,33 +334,12 @@ fetch(hucURL)
       );
 
 
-      // ---------------------------------------
-      // OPTIONAL NOTE
-      // ---------------------------------------
-
-      let noteHTML = "";
-
-      if (project.note) {
-
-        noteHTML = `
-          <p class="project-note">
-            ${project.note}
-          </p>
-        `;
-
-      }
-
-
-      // ---------------------------------------
+      // =======================================
       // POPUP
-      // ---------------------------------------
+      // =======================================
 
       marker.bindPopup(`
         <div class="project-popup">
-
-          <div class="project-type">
-            ${project.type}
-          </div>
 
           <h3>
             ${project.name}
@@ -351,17 +349,17 @@ fetch(hucURL)
             ${project.description}
           </p>
 
-          ${noteHTML}
-
         </div>
       `);
 
 
-      // ---------------------------------------
+      // =======================================
       // CLICK MARKER
-      // ---------------------------------------
+      // =======================================
 
       marker.on("click", function () {
+
+        // Reset previously selected marker
 
         if (selectedMarker) {
 
@@ -376,13 +374,19 @@ fetch(hucURL)
               );
 
             if (oldCircle) {
-              oldCircle.classList.remove("selected");
+
+              oldCircle.classList.remove(
+                "selected"
+              );
+
             }
 
           }
 
         }
 
+
+        // Highlight clicked marker
 
         const markerElement =
           marker.getElement();
@@ -395,7 +399,11 @@ fetch(hucURL)
             );
 
           if (circle) {
-            circle.classList.add("selected");
+
+            circle.classList.add(
+              "selected"
+            );
+
           }
 
         }
@@ -406,9 +414,9 @@ fetch(hucURL)
       });
 
 
-      // ---------------------------------------
+      // =======================================
       // POPUP CLOSED
-      // ---------------------------------------
+      // =======================================
 
       marker.on("popupclose", function () {
 
@@ -423,14 +431,20 @@ fetch(hucURL)
             );
 
           if (circle) {
-            circle.classList.remove("selected");
+
+            circle.classList.remove(
+              "selected"
+            );
+
           }
 
         }
 
 
         if (selectedMarker === marker) {
+
           selectedMarker = null;
+
         }
 
       });
@@ -439,7 +453,7 @@ fetch(hucURL)
 
 
     // =========================================
-    // LEGEND
+    // MAP LEGEND
     // =========================================
 
     const legend = L.control({
@@ -481,8 +495,6 @@ fetch(hucURL)
       `;
 
 
-      // Prevent map dragging/zooming when
-      // interacting with the legend
       L.DomEvent.disableClickPropagation(div);
       L.DomEvent.disableScrollPropagation(div);
 
@@ -495,7 +507,10 @@ fetch(hucURL)
     legend.addTo(map);
 
 
-    // Keep watershed line visible
+    // =========================================
+    // KEEP WATERSHED BORDER VISIBLE
+    // =========================================
+
     watershedLayer.bringToFront();
 
   })
