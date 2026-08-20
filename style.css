@@ -12,9 +12,11 @@ html,
 body {
   margin: 0;
   padding: 0;
+
   width: 100%;
   height: 100%;
 }
+
 
 body {
   display: flex;
@@ -44,13 +46,17 @@ header {
   flex-shrink: 0;
 }
 
+
 header h1 {
   margin: 0;
+
   font-size: 28px;
 }
 
+
 header p {
   margin: 4px 0 0;
+
   font-size: 18px;
 }
 
@@ -61,9 +67,12 @@ header p {
 
 main {
   flex: 1;
+
   min-height: 0;
+
   width: 100%;
 }
+
 
 #map {
   width: 100%;
@@ -96,13 +105,16 @@ main {
   background: #087f91;
 
   border: 3px solid white;
+
   border-radius: 50%;
 
   box-sizing: border-box;
+
   cursor: pointer;
 
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.4);
+    0 2px 6px
+    rgba(0, 0, 0, 0.4);
 
   transition:
     transform 0.2s ease,
@@ -122,12 +134,14 @@ main {
   height: 6px;
 
   background: white;
+
   border-radius: 50%;
 
   top: 50%;
   left: 50%;
 
-  transform: translate(-50%, -50%);
+  transform:
+    translate(-50%, -50%);
 }
 
 
@@ -151,24 +165,32 @@ main {
 @keyframes markerPulse {
 
   0% {
-    transform: scale(1.20);
+    transform:
+      scale(1.20);
 
     box-shadow:
-      0 0 0 0 rgba(8, 127, 145, 0.55);
+      0 0 0 0
+      rgba(8, 127, 145, 0.55);
   }
+
 
   50% {
-    transform: scale(1.45);
+    transform:
+      scale(1.45);
 
     box-shadow:
-      0 0 0 10px rgba(8, 127, 145, 0);
+      0 0 0 10px
+      rgba(8, 127, 145, 0);
   }
 
+
   100% {
-    transform: scale(1.20);
+    transform:
+      scale(1.20);
 
     box-shadow:
-      0 0 0 0 rgba(8, 127, 145, 0);
+      0 0 0 0
+      rgba(8, 127, 145, 0);
   }
 
 }
@@ -181,15 +203,23 @@ main {
 .project-marker.selected {
   background: #f28c28;
 
-  transform: scale(1.45);
+  transform:
+    scale(1.45);
 
   animation: none;
 
   box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.5);
+    0 3px 12px
+    rgba(0, 0, 0, 0.5);
 }
 
-.project-marker.selected .marker-center {
+
+/* =========================================
+   SELECTED MARKER CENTER
+========================================= */
+
+.project-marker.selected
+.marker-center {
   width: 7px;
   height: 7px;
 }
@@ -201,8 +231,14 @@ main {
 
 .project-popup {
   min-width: 230px;
+
   max-width: 280px;
 }
+
+
+/* =========================================
+   PROJECT TITLE
+========================================= */
 
 .project-popup h3 {
   margin: 0 0 8px 0;
@@ -210,13 +246,20 @@ main {
   color: #087f91;
 
   font-size: 17px;
+
   line-height: 1.25;
 }
+
+
+/* =========================================
+   PROJECT DESCRIPTION
+========================================= */
 
 .project-popup p {
   margin: 0;
 
   font-size: 14px;
+
   line-height: 1.45;
 
   color: #333333;
@@ -231,13 +274,20 @@ main {
   margin: 14px 16px;
 }
 
+
 .leaflet-popup-content-wrapper {
   border-radius: 8px;
 }
 
+
+/* =========================================
+   LEAFLET POPUP TIP
+========================================= */
+
 .leaflet-popup-tip {
   box-shadow:
-    2px 2px 4px rgba(0, 0, 0, 0.1);
+    2px 2px 4px
+    rgba(0, 0, 0, 0.1);
 }
 
 
@@ -251,18 +301,24 @@ main {
   color: white;
 
   border: none;
+
   border-radius: 6px;
 
   padding: 7px 10px;
 
   font-size: 13px;
+
   font-weight: bold;
 
   white-space: nowrap;
 
   box-shadow:
-    0 2px 7px rgba(0, 0, 0, 0.25);
+    0 2px 7px
+    rgba(0, 0, 0, 0.25);
 }
+
+
+/* Tooltip arrow */
 
 .leaflet-tooltip-right.project-tooltip::before {
   border-right-color: #087f91;
@@ -284,22 +340,27 @@ main {
   color: #333333;
 
   font-size: 12px;
+
   line-height: 1.3;
 
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.22);
+    0 2px 8px
+    rgba(0, 0, 0, 0.22);
 
   min-width: 175px;
 }
+
 
 .legend-title {
   color: #087f91;
 
   font-size: 14px;
+
   font-weight: bold;
 
   margin-bottom: 3px;
 }
+
 
 .legend-instructions {
   color: #777777;
@@ -307,10 +368,13 @@ main {
   font-size: 11px;
 
   margin-bottom: 9px;
+
   padding-bottom: 7px;
 
-  border-bottom: 1px solid #dddddd;
+  border-bottom:
+    1px solid #dddddd;
 }
+
 
 .legend-row {
   display: flex;
@@ -321,6 +385,7 @@ main {
 
   margin: 6px 0;
 }
+
 
 .legend-dot {
   display: inline-block;
@@ -333,18 +398,22 @@ main {
   border: 2px solid white;
 
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.35);
+    0 1px 3px
+    rgba(0, 0, 0, 0.35);
 
   flex-shrink: 0;
 }
+
 
 .legend-dot.teal {
   background: #087f91;
 }
 
+
 .legend-dot.orange {
   background: #f28c28;
 }
+
 
 .legend-line {
   display: inline-block;
@@ -352,7 +421,8 @@ main {
   width: 22px;
   height: 0;
 
-  border-top: 4px solid #f28c28;
+  border-top:
+    4px solid #f28c28;
 
   flex-shrink: 0;
 }
@@ -362,36 +432,29 @@ main {
    WATERSHED-WIDE PROGRAMS PANEL
 ========================================= */
 
-.leaflet-control.programs-panel {
-  width: 290px;
-
-  margin-top: 12px;
-  margin-left: 12px;
+.programs-panel {
+  width: 275px;
 
   background:
     rgba(255, 255, 255, 0.96);
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   overflow: hidden;
 
   color: #333333;
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
   box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.25);
+    0 3px 12px
+    rgba(0, 0, 0, 0.25);
 }
 
 
 /* =========================================
-   PROGRAMS PANEL HEADER
+   PANEL HEADER
 ========================================= */
 
-.leaflet-control.programs-panel .programs-header {
+.programs-header {
   display: flex;
 
   align-items: center;
@@ -399,25 +462,27 @@ main {
 
   gap: 12px;
 
-  padding: 13px 14px;
+  padding: 12px 13px;
 
   background: #087f91;
 
   color: white;
 }
 
-.leaflet-control.programs-panel .programs-title {
+
+.programs-title {
   font-size: 15px;
+
   font-weight: bold;
 }
 
-.leaflet-control.programs-panel .programs-subtitle {
-  margin-top: 3px;
 
-  font-size: 11px;
+.programs-subtitle {
+  margin-top: 2px;
 
-  color:
-    rgba(255, 255, 255, 0.82);
+  font-size: 10px;
+
+  opacity: 0.8;
 }
 
 
@@ -425,14 +490,14 @@ main {
    COLLAPSE BUTTON
 ========================================= */
 
-.leaflet-control.programs-panel .programs-toggle {
-  width: 27px;
-  height: 27px;
+.programs-toggle {
+  width: 25px;
+  height: 25px;
 
   padding: 0;
 
-  border:
-    1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid
+    rgba(255, 255, 255, 0.6);
 
   border-radius: 50%;
 
@@ -441,26 +506,20 @@ main {
 
   color: white;
 
-  font-family: inherit;
   font-size: 18px;
 
-  line-height: 23px;
-
-  text-align: center;
+  line-height: 20px;
 
   cursor: pointer;
 
   flex-shrink: 0;
 
-  appearance: none;
-  -webkit-appearance: none;
-
   transition:
-    background-color 0.2s ease,
+    background 0.2s ease,
     transform 0.2s ease;
 }
 
-.leaflet-control.programs-panel
+
 .programs-toggle:hover {
   background:
     rgba(255, 255, 255, 0.25);
@@ -470,22 +529,20 @@ main {
 
 
 /* =========================================
-   PROGRAM CONTENT
+   PROGRAM LIST
 ========================================= */
 
-.leaflet-control.programs-panel
 .programs-content {
   display: block;
-  background: white;
 }
 
-.leaflet-control.programs-panel
+
 .program-item {
   border-bottom:
     1px solid #e5e5e5;
 }
 
-.leaflet-control.programs-panel
+
 .program-item:last-child {
   border-bottom: none;
 }
@@ -495,73 +552,60 @@ main {
    PROGRAM BUTTON
 ========================================= */
 
-.leaflet-control.programs-panel
 .program-button {
   display: grid;
 
   grid-template-columns:
-    10px 1fr 18px;
+    12px 1fr 16px;
 
   align-items: center;
 
-  gap: 10px;
+  gap: 9px;
 
   width: 100%;
 
-  margin: 0;
-
-  padding: 12px 14px;
+  padding: 11px 12px;
 
   border: none;
-  border-radius: 0;
 
   background: white;
 
   color: #333333;
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: inherit;
 
-  font-size: 13px;
+  font-size: 12px;
+
   font-weight: bold;
-
-  line-height: 1.25;
 
   text-align: left;
 
   cursor: pointer;
 
-  appearance: none;
-  -webkit-appearance: none;
-
   transition:
-    background-color 0.2s ease,
+    background 0.2s ease,
     color 0.2s ease;
 }
 
-.leaflet-control.programs-panel
+
 .program-button:hover {
-  background: #edf7f8;
+  background: #f1f8f9;
+
   color: #087f91;
 }
 
 
 /* =========================================
-   LITTLE TEAL PROGRAM DOT
+   LITTLE PROGRAM DOT
 ========================================= */
 
-.leaflet-control.programs-panel
 .program-dot {
-  display: block;
-
   width: 9px;
   height: 9px;
 
-  background: #087f91;
-
   border-radius: 50%;
+
+  background: #087f91;
 }
 
 
@@ -569,11 +613,11 @@ main {
    PLUS / MINUS
 ========================================= */
 
-.leaflet-control.programs-panel
 .program-arrow {
   color: #087f91;
 
-  font-size: 17px;
+  font-size: 16px;
+
   font-weight: normal;
 
   text-align: center;
@@ -584,34 +628,31 @@ main {
    DESCRIPTION
 ========================================= */
 
-.leaflet-control.programs-panel
 .program-description {
   display: none;
 
   padding:
-    0 15px 14px 34px;
-
-  background: #edf7f8;
+    0 15px 13px 33px;
 
   color: #555555;
 
-  font-size: 12px;
+  font-size: 11px;
 
   line-height: 1.45;
 }
 
-.leaflet-control.programs-panel
+
 .program-item.open
 .program-description {
   display: block;
 }
 
-.leaflet-control.programs-panel
+
 .program-item.open
 .program-button {
-  background: #edf7f8;
-
   color: #087f91;
+
+  background: #f1f8f9;
 }
 
 
@@ -619,52 +660,105 @@ main {
    COLLAPSED PROGRAM PANEL
 ========================================= */
 
-.leaflet-control.programs-panel.collapsed {
-  width: 250px;
+.programs-panel.collapsed {
+  width: 230px;
 }
 
 
 /* =========================================
-   MOBILE
+   MAP LAYER SWITCHER
 ========================================= */
 
-@media (max-width: 600px) {
+.leaflet-control-layers {
+  min-width: 155px;
 
-  header {
-    padding: 10px 12px;
-  }
+  padding: 11px 13px;
 
-  header h1 {
-    font-size: 21px;
-  }
+  border: none !important;
 
-  header p {
-    font-size: 14px;
-  }
+  border-radius: 10px;
 
-  .leaflet-control.programs-panel {
-    width: 235px;
+  background:
+    rgba(255, 255, 255, 0.96);
 
-    margin-left: 8px;
-    margin-top: 8px;
-  }
+  color: #333333;
 
-  .leaflet-control.programs-panel
-  .programs-title {
-    font-size: 13px;
-  }
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-  .leaflet-control.programs-panel
-  .program-button {
-    font-size: 12px;
-  }
+  box-shadow:
+    0 3px 12px
+    rgba(0, 0, 0, 0.25);
+}
 
-  .map-legend {
-    min-width: 150px;
 
-    padding: 9px 11px;
+/* =========================================
+   MAP LAYERS TITLE
+========================================= */
 
-    font-size: 11px;
-  }
+.leaflet-control-layers::before {
+  content: "Map Layers";
 
+  display: block;
+
+  margin-bottom: 7px;
+
+  padding-bottom: 6px;
+
+  border-bottom:
+    1px solid #dddddd;
+
+  color: #087f91;
+
+  font-size: 14px;
+
+  font-weight: bold;
+}
+
+
+/* =========================================
+   MAP LAYER OPTIONS
+========================================= */
+
+.leaflet-control-layers-base label {
+  display: block;
+
+  margin: 7px 0;
+
+  color: #333333;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+
+.leaflet-control-layers-base label:hover {
+  color: #087f91;
+}
+
+
+/* =========================================
+   MAP LAYER RADIO BUTTONS
+========================================= */
+
+.leaflet-control-layers-base input {
+  margin-right: 7px;
+
+  accent-color: #087f91;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   REMOVE UNNECESSARY SEPARATOR
+========================================= */
+
+.leaflet-control-layers-separator {
+  display: none;
 }
