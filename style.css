@@ -489,3 +489,239 @@ main {
 
   flex-shrink: 0;
 }
+
+/* =========================================
+   WATERSHED-WIDE PROGRAMS PANEL
+========================================= */
+
+.programs-panel {
+  width: 275px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  color: #333333;
+
+  box-shadow:
+    0 3px 12px
+    rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================
+   PANEL HEADER
+========================================= */
+
+.programs-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px 13px;
+
+  background: #087f91;
+
+  color: white;
+}
+
+
+.programs-title {
+  font-size: 15px;
+
+  font-weight: bold;
+}
+
+
+.programs-subtitle {
+  margin-top: 2px;
+
+  font-size: 10px;
+
+  opacity: 0.8;
+}
+
+
+/* =========================================
+   COLLAPSE BUTTON
+========================================= */
+
+.programs-toggle {
+  width: 25px;
+  height: 25px;
+
+  padding: 0;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.6);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  color: white;
+
+  font-size: 18px;
+
+  line-height: 20px;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.programs-toggle:hover {
+  background:
+    rgba(255, 255, 255, 0.25);
+
+  transform: scale(1.08);
+}
+
+
+/* =========================================
+   PROGRAM LIST
+========================================= */
+
+.programs-content {
+  display: block;
+}
+
+
+.program-item {
+  border-bottom:
+    1px solid #e5e5e5;
+}
+
+
+.program-item:last-child {
+  border-bottom: none;
+}
+
+
+/* =========================================
+   PROGRAM BUTTON
+========================================= */
+
+.program-button {
+  display: grid;
+
+  grid-template-columns:
+    12px 1fr 16px;
+
+  align-items: center;
+
+  gap: 9px;
+
+  width: 100%;
+
+  padding: 11px 12px;
+
+  border: none;
+
+  background: white;
+
+  color: #333333;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.program-button:hover {
+  background: #f1f8f9;
+
+  color: #087f91;
+}
+
+
+/* =========================================
+   LITTLE PROGRAM DOT
+========================================= */
+
+.program-dot {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #087f91;
+}
+
+
+/* =========================================
+   PLUS / MINUS
+========================================= */
+
+.program-arrow {
+  color: #087f91;
+
+  font-size: 16px;
+
+  font-weight: normal;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.program-description {
+  display: none;
+
+  padding:
+    0 15px 13px 33px;
+
+  color: #555555;
+
+  font-size: 11px;
+
+  line-height: 1.45;
+}
+
+
+.program-item.open
+.program-description {
+  display: block;
+}
+
+
+.program-item.open
+.program-button {
+  color: #087f91;
+
+  background: #f1f8f9;
+}
+
+
+/* =========================================
+   COLLAPSED PANEL
+========================================= */
+
+.programs-panel.collapsed {
+  width: 230px;
+}
