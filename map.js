@@ -33,7 +33,6 @@ const standardMap = L.tileLayer(
 
 // ---------------------------------------------
 // TOPOGRAPHIC MAP
-// Esri World Topographic Map
 // ---------------------------------------------
 
 const topoMap = L.tileLayer(
@@ -47,7 +46,6 @@ const topoMap = L.tileLayer(
 
 // ---------------------------------------------
 // SATELLITE MAP
-// Esri World Imagery
 // ---------------------------------------------
 
 const satelliteMap = L.tileLayer(
@@ -82,9 +80,6 @@ L.control.layers(
   null,
   {
     position: "topright",
-
-    // Keep options visible so users immediately
-    // know that different map layers are available.
     collapsed: false
   }
 ).addTo(map);
@@ -325,22 +320,105 @@ fetch(hucURL)
 
 
       // ---------------------------------------
-      // POPUP
+      // POPUP CONTENT
       // ---------------------------------------
 
-      marker.bindPopup(`
-        <div class="project-popup">
+      let popupContent;
 
-          <h3>
-            ${project.name}
-          </h3>
 
-          <p>
-            ${project.description}
-          </p>
+      // =======================================
+      // SPECIAL EXPANDED POPUP
+      // BLUE RIVER HABITAT RESTORATION
+      // =======================================
 
-        </div>
-      `);
+      if (
+        project.name ===
+        "Blue River Habitat Restoration Project"
+      ) {
+
+        popupContent = `
+          <div class="project-popup project-popup-expanded">
+
+            <h3>
+              ${project.name}
+            </h3>
+
+
+            <!-- PHOTO PLACEHOLDER -->
+
+            <div class="project-photo-placeholder">
+
+              <div class="photo-placeholder-icon">
+                ▧
+              </div>
+
+              <div class="photo-placeholder-text">
+                Project photo coming soon
+              </div>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="project-description">
+
+              <p>
+                ${project.description}
+              </p>
+
+            </div>
+
+
+            <!-- RESOURCES -->
+
+            <div class="project-resources">
+
+              <div class="resources-title">
+                Resources & Links
+              </div>
+
+              <div class="resource-placeholder">
+                Project links coming soon
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+      }
+
+
+      // =======================================
+      // NORMAL POPUP FOR OTHER PROJECTS
+      // =======================================
+
+      else {
+
+        popupContent = `
+          <div class="project-popup">
+
+            <h3>
+              ${project.name}
+            </h3>
+
+            <p>
+              ${project.description}
+            </p>
+
+          </div>
+        `;
+
+      }
+
+
+      marker.bindPopup(
+        popupContent,
+        {
+          maxWidth: 380
+        }
+      );
 
 
       // ---------------------------------------
@@ -673,7 +751,9 @@ fetch(hucURL)
         `;
 
 
-        // Prevent panel interactions from moving map
+        // -------------------------------------
+        // PREVENT PANEL FROM MOVING MAP
+        // -------------------------------------
 
         L.DomEvent.disableClickPropagation(
           div
@@ -713,8 +793,6 @@ fetch(hucURL)
                   );
 
 
-                // Close all items
-
                 div
                   .querySelectorAll(
                     ".program-item"
@@ -745,8 +823,6 @@ fetch(hucURL)
                     }
                   );
 
-
-                // Open selected item
 
                 if (!currentlyOpen) {
 
