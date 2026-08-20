@@ -144,22 +144,11 @@ fetch(hucURL)
     // =========================================
     // MAPPED PROJECTS / PROGRAMS
     //
-    // These remain geographic markers.
+    // These are the items that remain as
+    // geographic dots on the map.
     // =========================================
 
     const projects = [
-
-      {
-        name:
-          "Summit County Outdoor Coalition",
-
-        lat: 39.655,
-        lng: -106.180,
-
-        description:
-          "Part of CPW's Regional Partnership Initiative, SCOC works to ensure collaborative solutions for conservation and recreation."
-      },
-
 
       {
         name:
@@ -383,6 +372,7 @@ fetch(hucURL)
         <div class="programs-header">
 
           <div>
+
             <div class="programs-title">
               Watershed-Wide Programs
             </div>
@@ -390,7 +380,9 @@ fetch(hucURL)
             <div class="programs-subtitle">
               Programs serving Summit County
             </div>
+
           </div>
+
 
           <button
             class="programs-toggle"
@@ -406,11 +398,51 @@ fetch(hucURL)
         <div class="programs-content">
 
 
-          <!-- EDUCATIONAL PROGRAMMING -->
+          <!-- =================================
+               SUMMIT COUNTY OUTDOOR COALITION
+          ================================== -->
 
           <div class="program-item">
 
-            <button class="program-button">
+            <button
+              class="program-button"
+              type="button"
+            >
+
+              <span class="program-dot"></span>
+
+              <span>
+                Summit County Outdoor Coalition
+              </span>
+
+              <span class="program-arrow">
+                +
+              </span>
+
+            </button>
+
+
+            <div class="program-description">
+
+              Part of CPW's Regional Partnership Initiative,
+              SCOC's works to ensure collaborative solutions
+              for conservation and recreation.
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================
+               EDUCATIONAL PROGRAMMING
+          ================================== -->
+
+          <div class="program-item">
+
+            <button
+              class="program-button"
+              type="button"
+            >
 
               <span class="program-dot"></span>
 
@@ -427,21 +459,25 @@ fetch(hucURL)
 
             <div class="program-description">
 
-              BRWG provides environmental and water
-              policy educational programming to adults
-              and youth throughout the year in Summit
-              County.
+              BRWG provides environmental and water policy
+              educational programming to adults and youth
+              throughout the year in Summit County.
 
             </div>
 
           </div>
 
 
-          <!-- WILDFIRE READY WATERSHEDS -->
+          <!-- =================================
+               WILDFIRE READY WATERSHEDS
+          ================================== -->
 
           <div class="program-item">
 
-            <button class="program-button">
+            <button
+              class="program-button"
+              type="button"
+            >
 
               <span class="program-dot"></span>
 
@@ -458,21 +494,25 @@ fetch(hucURL)
 
             <div class="program-description">
 
-              BRWG has secured funding to bring a
-              Wildfire Ready Action Plan to our
-              Community to prepare for pre and post
-              fire impacts.
+              BRWG has secured funding to bring a Wildfire
+              Ready Action Plan to our Community to prepare
+              for pre and post fire impacts.
 
             </div>
 
           </div>
 
 
-          <!-- BLUE RIVER CLEAN-UP FESTIVAL -->
+          <!-- =================================
+               BLUE RIVER CLEAN-UP FESTIVAL
+          ================================== -->
 
           <div class="program-item">
 
-            <button class="program-button">
+            <button
+              class="program-button"
+              type="button"
+            >
 
               <span class="program-dot"></span>
 
@@ -503,7 +543,7 @@ fetch(hucURL)
 
 
       // ---------------------------------------
-      // DON'T LET PANEL INTERACTION MOVE MAP
+      // PREVENT PANEL FROM MOVING MAP
       // ---------------------------------------
 
       L.DomEvent.disableClickPropagation(div);
@@ -511,7 +551,7 @@ fetch(hucURL)
 
 
       // ---------------------------------------
-      // EXPAND INDIVIDUAL PROGRAMS
+      // EXPAND / COLLAPSE PROGRAM ITEMS
       // ---------------------------------------
 
       const programButtons =
@@ -538,7 +578,7 @@ fetch(hucURL)
               );
 
 
-            // Close all programs first
+            // Close all items
 
             div
               .querySelectorAll(
@@ -550,10 +590,12 @@ fetch(hucURL)
                   "open"
                 );
 
+
                 const arrow =
                   otherItem.querySelector(
                     ".program-arrow"
                   );
+
 
                 if (arrow) {
                   arrow.textContent = "+";
@@ -562,7 +604,7 @@ fetch(hucURL)
               });
 
 
-            // Open clicked program
+            // Open clicked item
 
             if (!currentlyOpen) {
 
@@ -570,10 +612,12 @@ fetch(hucURL)
                 "open"
               );
 
+
               const arrow =
                 item.querySelector(
                   ".program-arrow"
                 );
+
 
               if (arrow) {
                 arrow.textContent = "−";
@@ -628,6 +672,7 @@ fetch(hucURL)
 
           }
 
+
           else {
 
             content.style.display =
@@ -678,23 +723,42 @@ fetch(hucURL)
           Map Guide
         </div>
 
+
         <div class="legend-instructions">
           Hover for a name • Click for details
         </div>
 
+
         <div class="legend-row">
+
           <span class="legend-dot teal"></span>
-          <span>Mapped project or program</span>
+
+          <span>
+            Mapped project or program
+          </span>
+
         </div>
 
+
         <div class="legend-row">
+
           <span class="legend-dot orange"></span>
-          <span>Selected location</span>
+
+          <span>
+            Selected location
+          </span>
+
         </div>
 
+
         <div class="legend-row">
+
           <span class="legend-line"></span>
-          <span>Blue River HUC8 boundary</span>
+
+          <span>
+            Blue River HUC8 boundary
+          </span>
+
         </div>
 
       `;
