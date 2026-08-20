@@ -366,3 +366,126 @@ main {
 .leaflet-tooltip-right.project-tooltip::before {
   border-right-color: #087f91;
 }
+
+
+/* =========================================
+   MAP LEGEND
+========================================= */
+
+.map-legend {
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  padding: 12px 14px;
+
+  border-radius: 8px;
+
+  color: #333333;
+
+  font-size: 12px;
+
+  line-height: 1.3;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.22);
+
+  min-width: 175px;
+}
+
+
+/* -----------------------------------------
+   LEGEND TITLE
+----------------------------------------- */
+
+.legend-title {
+  color: #087f91;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  margin-bottom: 3px;
+}
+
+
+/* -----------------------------------------
+   INSTRUCTIONS
+----------------------------------------- */
+
+.legend-instructions {
+  color: #777777;
+
+  font-size: 11px;
+
+  margin-bottom: 9px;
+
+  padding-bottom: 7px;
+
+  border-bottom:
+    1px solid #dddddd;
+}
+
+
+/* -----------------------------------------
+   LEGEND ROW
+----------------------------------------- */
+
+.legend-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 6px 0;
+}
+
+
+/* -----------------------------------------
+   DOT SYMBOLS
+----------------------------------------- */
+
+.legend-dot {
+  display: inline-block;
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  border: 2px solid white;
+
+  box-shadow:
+    0 1px 3px
+    rgba(0, 0, 0, 0.35);
+
+  flex-shrink: 0;
+}
+
+
+.legend-dot.teal {
+  background: #087f91;
+}
+
+
+.legend-dot.orange {
+  background: #f28c28;
+}
+
+
+/* -----------------------------------------
+   HUC8 LINE SYMBOL
+----------------------------------------- */
+
+.legend-line {
+  display: inline-block;
+
+  width: 22px;
+  height: 0;
+
+  border-top:
+    4px solid #f28c28;
+
+  flex-shrink: 0;
+}
