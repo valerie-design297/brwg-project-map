@@ -1030,18 +1030,34 @@ main {
 ========================================= */
 
 .leaflet-control.programs-panel
+.program-item {
+  position: relative;
+}
+
+
+.leaflet-control.programs-panel
 .program-item.open
 .program-button {
   background: #e6f3f5;
-
   color: #087f91;
 }
 
 
-/* Thin teal accent bar on active item */
+/* Teal accent bar on active item */
 
 .leaflet-control.programs-panel
-.program-item.open {
-  box-shadow:
-    inset 3px 0 0 #087f91;
+.program-item.open::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: 4px;
+
+  background: #087f91;
+
+  z-index: 10;
 }
