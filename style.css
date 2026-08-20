@@ -1,852 +1,751 @@
-/* =========================================
-   BLUE RIVER WATERSHED GROUP
-   Projects and Programs Map
-========================================= */
+// =============================================
+// BLUE RIVER WATERSHED GROUP
+// Projects and Programs Interactive Map
+// =============================================
 
 
-/* =========================================
-   PAGE SETUP
-========================================= */
+// ---------------------------------------------
+// CREATE MAP
+// ---------------------------------------------
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-
-  width: 100%;
-  height: 100%;
-}
+const map = L.map("map", {
+  zoomControl: true
+}).setView([39.55, -106.15], 9);
 
 
-body {
-  display: flex;
-  flex-direction: column;
+// ---------------------------------------------
+// BASEMAP
+// ---------------------------------------------
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  overflow: hidden;
-}
-
-
-/* =========================================
-   HEADER
-========================================= */
-
-header {
-  background: #087f91;
-  color: white;
-
-  text-align: center;
-
-  padding: 14px 20px;
-
-  flex-shrink: 0;
-}
-
-
-header h1 {
-  margin: 0;
-
-  font-size: 28px;
-}
-
-
-header p {
-  margin: 4px 0 0;
-
-  font-size: 18px;
-}
-
-
-/* =========================================
-   MAP
-========================================= */
-
-main {
-  flex: 1;
-
-  min-height: 0;
-
-  width: 100%;
-}
-
-
-#map {
-  width: 100%;
-  height: 100%;
-}
-
-
-/* =========================================
-   LEAFLET MARKER CONTAINER
-========================================= */
-
-.project-marker-container {
-  background: transparent;
-  border: none;
-}
-
-
-/* =========================================
-   PROJECT MARKER
-========================================= */
-
-.project-marker {
-  position: relative;
-
-  width: 26px;
-  height: 26px;
-
-  margin: 3px;
-
-  background: #087f91;
-
-  border: 3px solid white;
-
-  border-radius: 50%;
-
-  box-sizing: border-box;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 2px 6px
-    rgba(0, 0, 0, 0.4);
-
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-
-/* =========================================
-   WHITE CENTER DOT
-========================================= */
-
-.marker-center {
-  position: absolute;
-
-  width: 6px;
-  height: 6px;
-
-  background: white;
-
-  border-radius: 50%;
-
-  top: 50%;
-  left: 50%;
-
-  transform:
-    translate(-50%, -50%);
-}
-
-
-/* =========================================
-   MARKER HOVER
-========================================= */
-
-.project-marker:hover {
-  background: #0a6977;
-
-  animation:
-    markerPulse 1.1s
-    ease-in-out infinite;
-}
-
-
-/* =========================================
-   PULSE / BULGE ANIMATION
-========================================= */
-
-@keyframes markerPulse {
-
-  0% {
-    transform:
-      scale(1.20);
-
-    box-shadow:
-      0 0 0 0
-      rgba(8, 127, 145, 0.55);
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
   }
+).addTo(map);
 
 
-  50% {
-    transform:
-      scale(1.45);
+// ---------------------------------------------
+// BLUE RIVER HUC8
+// HUC8: 14010002
+// ---------------------------------------------
 
-    box-shadow:
-      0 0 0 10px
-      rgba(8, 127, 145, 0);
-  }
+const hucURL =
+  "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4/query" +
+  "?where=HUC8%3D%2714010002%27" +
+  "&outFields=*" +
+  "&returnGeometry=true" +
+  "&outSR=4326" +
+  "&f=geojson";
 
 
-  100% {
-    transform:
-      scale(1.20);
+// ---------------------------------------------
+// LOAD WATERSHED
+// ---------------------------------------------
 
-    box-shadow:
-      0 0 0 0
-      rgba(8, 127, 145, 0);
-  }
+fetch(hucURL)
 
-}
+  .then(response => {
 
+    if (!response.ok) {
+      throw new Error(
+        "USGS request failed: " + response.status
+      );
+    }
 
-/* =========================================
-   CLICKED / SELECTED MARKER
-========================================= */
+    return response.json();
 
-.project-marker.selected {
-  background: #f28c28;
+  })
 
-  transform:
-    scale(1.45);
+  .then(data => {
 
-  animation: none;
+    if (!data.features || data.features.length === 0) {
+      throw new Error(
+        "USGS returned no watershed features."
+      );
+    }
 
-  box-shadow:
-    0 3px 12px
-    rgba(0, 0, 0, 0.5);
-}
 
+    // =========================================
+    // GRAY OUT EVERYTHING OUTSIDE HUC8
+    // =========================================
 
-/* =========================================
-   SELECTED MARKER CENTER
-========================================= */
+    const outsideMask = turf.mask(data);
 
-.project-marker.selected
-.marker-center {
-  width: 7px;
-  height: 7px;
-}
+    L.geoJSON(outsideMask, {
 
+      style: {
+        fillColor: "#808080",
+        fillOpacity: 0.45,
+        stroke: false
+      },
 
-/* =========================================
-   PROJECT POPUP
-========================================= */
+      interactive: false
 
-.project-popup {
-  min-width: 230px;
+    }).addTo(map);
 
-  max-width: 280px;
-}
 
+    // =========================================
+    // WATERSHED BOUNDARY
+    // =========================================
 
-/* =========================================
-   PROJECT TYPE
-========================================= */
+    const watershedLayer = L.geoJSON(data, {
 
-.project-type {
-  display: inline-block;
+      style: {
+        color: "#f28c28",
+        weight: 5,
+        opacity: 1,
+        fillOpacity: 0
+      }
 
-  margin-bottom: 6px;
+    }).addTo(map);
 
-  color: #777777;
 
-  font-size: 11px;
+    watershedLayer.bringToFront();
 
-  font-weight: bold;
 
-  text-transform: uppercase;
+    // =========================================
+    // ZOOM TO WATERSHED
+    // =========================================
 
-  letter-spacing: 0.7px;
-}
+    const bounds = watershedLayer.getBounds();
 
+    if (bounds.isValid()) {
 
-/* =========================================
-   PROJECT TITLE
-========================================= */
+      map.fitBounds(bounds, {
+        padding: [35, 35]
+      });
 
-.project-popup h3 {
-  margin: 0 0 8px 0;
+    }
 
-  color: #087f91;
 
-  font-size: 17px;
+    // =========================================
+    // PROJECT MARKER DESIGN
+    // =========================================
 
-  line-height: 1.25;
-}
+    const projectIcon = L.divIcon({
 
+      className: "project-marker-container",
 
-/* =========================================
-   PROJECT DESCRIPTION
-========================================= */
+      html: `
+        <div class="project-marker">
+          <span class="marker-center"></span>
+        </div>
+      `,
 
-.project-popup p {
-  margin: 0;
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -18]
 
-  font-size: 14px;
+    });
 
-  line-height: 1.45;
 
-  color: #333333;
-}
+    // =========================================
+    // MAPPED PROJECTS / PROGRAMS
+    // =========================================
 
+    const projects = [
 
-/* =========================================
-   REPRESENTATIVE LOCATION NOTE
-========================================= */
+      {
+        name:
+          "Blue River Habitat Restoration Project",
 
-.project-popup .project-note {
-  margin-top: 10px;
+        lat: 39.627140,
+        lng: -106.071730,
 
-  padding-top: 8px;
+        description:
+          "This restoration project aims to restore habitat along the Blue River with the goal of improving the overall ecosystem and restoring Gold Medal status to the Blue River below the Dillon Dam."
+      },
 
-  border-top:
-    1px solid #dddddd;
 
-  color: #777777;
+      {
+        name:
+          "River Watch: Water Quality Monitoring",
 
-  font-size: 11px;
+        lat: 39.665,
+        lng: -106.083,
 
-  font-style: italic;
+        description:
+          "Through CPW's River Watch and our citizen science program BRWG ensures water quality is regularly monitored."
+      },
 
-  line-height: 1.35;
-}
 
+      {
+        name:
+          "Peru Creek Mine Restoration",
 
-/* =========================================
-   LEAFLET POPUP
-========================================= */
+        lat: 39.603,
+        lng: -105.995,
 
-.leaflet-popup-content {
-  margin: 14px 16px;
-}
+        description:
+          "Under the Snake River Watershed Plan, several mine mitigation projects have taken place in the Peru Creek Drainage."
+      },
 
 
-.leaflet-popup-content-wrapper {
-  border-radius: 8px;
-}
+      {
+        name:
+          "Ten Mile Creek Restoration Project",
 
+        lat: 39.575,
+        lng: -106.275,
 
-/* =========================================
-   LEAFLET POPUP TIP
-========================================= */
+        description:
+          "Ten Mile Creek Project addressed severe impacts from development and I-70. This project revitalized this important riparian corridor."
+      },
 
-.leaflet-popup-tip {
-  box-shadow:
-    2px 2px 4px
-    rgba(0, 0, 0, 0.1);
-}
 
+      {
+        name:
+          "Swan River Restoration Project",
 
-/* =========================================
-   PROJECT HOVER LABELS
-========================================= */
+        lat: 39.504,
+        lng: -106.001,
 
-.project-tooltip {
-  background: #087f91;
+        description:
+          "Dredge mining tailing piles blocking the Swan River were removed, restoring this vital habitat and improving an incredible recreational and educational resource."
+      }
 
-  color: white;
+    ];
 
-  border: none;
 
-  border-radius: 6px;
+    // =========================================
+    // ADD PROJECT MARKERS
+    // =========================================
 
-  padding: 7px 10px;
+    let selectedMarker = null;
 
-  font-size: 13px;
 
-  font-weight: bold;
+    projects.forEach(project => {
 
-  white-space: nowrap;
+      const marker = L.marker(
+        [project.lat, project.lng],
+        {
+          icon: projectIcon
+        }
+      ).addTo(map);
 
-  box-shadow:
-    0 2px 7px
-    rgba(0, 0, 0, 0.25);
-}
 
+      // ---------------------------------------
+      // HOVER LABEL
+      // ---------------------------------------
 
-/* =========================================
-   TOOLTIP ARROW
-========================================= */
+      marker.bindTooltip(
+        project.name,
+        {
+          direction: "right",
+          offset: [15, 0],
+          opacity: 1,
+          className: "project-tooltip"
+        }
+      );
 
-.leaflet-tooltip-right.project-tooltip::before {
-  border-right-color: #087f91;
-}
 
+      // ---------------------------------------
+      // POPUP
+      // ---------------------------------------
 
-/* =========================================
-   MAP LEGEND
-========================================= */
+      marker.bindPopup(`
+        <div class="project-popup">
 
-.map-legend {
-  background:
-    rgba(255, 255, 255, 0.94);
+          <h3>
+            ${project.name}
+          </h3>
 
-  padding: 12px 14px;
+          <p>
+            ${project.description}
+          </p>
 
-  border-radius: 8px;
+        </div>
+      `);
 
-  color: #333333;
 
-  font-size: 12px;
+      // ---------------------------------------
+      // CLICK MARKER
+      // ---------------------------------------
 
-  line-height: 1.3;
+      marker.on("click", function () {
 
-  box-shadow:
-    0 2px 8px
-    rgba(0, 0, 0, 0.22);
+        if (selectedMarker) {
 
-  min-width: 175px;
-}
+          const oldElement =
+            selectedMarker.getElement();
 
+          if (oldElement) {
 
-/* =========================================
-   LEGEND TITLE
-========================================= */
+            const oldCircle =
+              oldElement.querySelector(
+                ".project-marker"
+              );
 
-.legend-title {
-  color: #087f91;
+            if (oldCircle) {
+              oldCircle.classList.remove(
+                "selected"
+              );
+            }
 
-  font-size: 14px;
+          }
 
-  font-weight: bold;
+        }
 
-  margin-bottom: 3px;
-}
 
+        const markerElement =
+          marker.getElement();
 
-/* =========================================
-   LEGEND INSTRUCTIONS
-========================================= */
+        if (markerElement) {
 
-.legend-instructions {
-  color: #777777;
+          const circle =
+            markerElement.querySelector(
+              ".project-marker"
+            );
 
-  font-size: 11px;
+          if (circle) {
+            circle.classList.add(
+              "selected"
+            );
+          }
 
-  margin-bottom: 9px;
+        }
 
-  padding-bottom: 7px;
 
-  border-bottom:
-    1px solid #dddddd;
-}
+        selectedMarker = marker;
 
+      });
 
-/* =========================================
-   LEGEND ROW
-========================================= */
 
-.legend-row {
-  display: flex;
+      // ---------------------------------------
+      // POPUP CLOSED
+      // ---------------------------------------
 
-  align-items: center;
+      marker.on("popupclose", function () {
 
-  gap: 8px;
+        const markerElement =
+          marker.getElement();
 
-  margin: 6px 0;
-}
+        if (markerElement) {
 
+          const circle =
+            markerElement.querySelector(
+              ".project-marker"
+            );
 
-/* =========================================
-   LEGEND DOTS
-========================================= */
+          if (circle) {
+            circle.classList.remove(
+              "selected"
+            );
+          }
 
-.legend-dot {
-  display: inline-block;
+        }
 
-  width: 12px;
-  height: 12px;
 
-  border-radius: 50%;
+        if (selectedMarker === marker) {
+          selectedMarker = null;
+        }
 
-  border: 2px solid white;
+      });
 
-  box-shadow:
-    0 1px 3px
-    rgba(0, 0, 0, 0.35);
+    });
 
-  flex-shrink: 0;
-}
 
+    // =========================================
+    // WATERSHED-WIDE PROGRAMS PANEL
+    // =========================================
 
-.legend-dot.teal {
-  background: #087f91;
-}
+    const programsControl = L.control({
+      position: "topleft"
+    });
 
 
-.legend-dot.orange {
-  background: #f28c28;
-}
+    programsControl.onAdd = function () {
 
+      const div = L.DomUtil.create(
+        "div",
+        "programs-panel"
+      );
 
-/* =========================================
-   HUC8 LINE SYMBOL
-========================================= */
 
-.legend-line {
-  display: inline-block;
+      div.innerHTML = `
 
-  width: 22px;
-  height: 0;
+        <div class="programs-header">
 
-  border-top:
-    4px solid #f28c28;
+          <div>
+            <div class="programs-title">
+              Watershed-Wide Programs
+            </div>
 
-  flex-shrink: 0;
-}
+            <div class="programs-subtitle">
+              Programs serving Summit County
+            </div>
+          </div>
 
+          <button
+            class="programs-toggle"
+            type="button"
+            aria-label="Collapse programs"
+          >
+            −
+          </button>
 
-/* =========================================
-   WATERSHED-WIDE PROGRAMS PANEL
-========================================= */
+        </div>
 
-.leaflet-control.programs-panel {
-  width: 290px;
 
-  margin-top: 12px;
-  margin-left: 12px;
+        <div class="programs-content">
 
-  background:
-    rgba(255, 255, 255, 0.96);
 
-  border-radius: 12px;
+          <!-- SUMMIT COUNTY OUTDOOR COALITION -->
 
-  overflow: hidden;
+          <div class="program-item">
 
-  color: #333333;
+            <button class="program-button">
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+              <span class="program-dot"></span>
 
-  box-shadow:
-    0 4px 15px
-    rgba(0, 0, 0, 0.25);
-}
+              <span>
+                Summit County Outdoor Coalition
+              </span>
 
+              <span class="program-arrow">
+                +
+              </span>
 
-/* =========================================
-   PROGRAMS PANEL HEADER
-========================================= */
+            </button>
 
-.leaflet-control.programs-panel
-.programs-header {
-  display: flex;
 
-  align-items: center;
-  justify-content: space-between;
+            <div class="program-description">
 
-  gap: 12px;
+              Part of CPW's Regional Partnership Initiative,
+              SCOC's works to ensure collaborative solutions
+              for conservation and recreation.
 
-  padding: 13px 14px;
+            </div>
 
-  background: #087f91;
+          </div>
 
-  color: white;
-}
 
+          <!-- EDUCATIONAL PROGRAMMING -->
 
-/* =========================================
-   PROGRAMS TITLE
-========================================= */
+          <div class="program-item">
 
-.leaflet-control.programs-panel
-.programs-title {
-  font-size: 15px;
+            <button class="program-button">
 
-  font-weight: bold;
-}
+              <span class="program-dot"></span>
 
+              <span>
+                Educational Programming
+              </span>
 
-/* =========================================
-   PROGRAMS SUBTITLE
-========================================= */
+              <span class="program-arrow">
+                +
+              </span>
 
-.leaflet-control.programs-panel
-.programs-subtitle {
-  margin-top: 3px;
+            </button>
 
-  font-size: 11px;
 
-  color:
-    rgba(255, 255, 255, 0.82);
-}
+            <div class="program-description">
 
+              BRWG provides environmental and water
+              policy educational programming to adults
+              and youth throughout the year in Summit
+              County.
 
-/* =========================================
-   PANEL COLLAPSE BUTTON
-========================================= */
+            </div>
 
-.leaflet-control.programs-panel
-.programs-toggle {
-  width: 27px;
-  height: 27px;
+          </div>
 
-  padding: 0;
 
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.6);
+          <!-- WILDFIRE READY WATERSHEDS -->
 
-  border-radius: 50%;
+          <div class="program-item">
 
-  background:
-    rgba(255, 255, 255, 0.12);
+            <button class="program-button">
 
-  color: white;
+              <span class="program-dot"></span>
 
-  font-family: inherit;
+              <span>
+                Wildfire Ready Watersheds
+              </span>
 
-  font-size: 18px;
+              <span class="program-arrow">
+                +
+              </span>
 
-  line-height: 23px;
+            </button>
 
-  text-align: center;
 
-  cursor: pointer;
+            <div class="program-description">
 
-  flex-shrink: 0;
+              BRWG has secured funding to bring a
+              Wildfire Ready Action Plan to our
+              Community to prepare for pre and post
+              fire impacts.
 
-  appearance: none;
-  -webkit-appearance: none;
+            </div>
 
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
+          </div>
 
 
-.leaflet-control.programs-panel
-.programs-toggle:hover {
-  background:
-    rgba(255, 255, 255, 0.25);
+          <!-- BLUE RIVER CLEAN-UP FESTIVAL -->
 
-  transform: scale(1.08);
-}
+          <div class="program-item">
 
+            <button class="program-button">
 
-/* =========================================
-   PROGRAM CONTENT
-========================================= */
+              <span class="program-dot"></span>
 
-.leaflet-control.programs-panel
-.programs-content {
-  display: block;
+              <span>
+                Blue River Clean-up Festival
+              </span>
 
-  background: white;
-}
+              <span class="program-arrow">
+                +
+              </span>
 
+            </button>
 
-/* =========================================
-   INDIVIDUAL PROGRAM ITEM
-========================================= */
 
-.leaflet-control.programs-panel
-.program-item {
-  border-bottom:
-    1px solid #e5e5e5;
-}
+            <div class="program-description">
 
+              BRWG's annual county-wide River Cleanup
+              brought 215 volunteers together to remove
+              4000 lbs of trash from our rivers.
 
-.leaflet-control.programs-panel
-.program-item:last-child {
-  border-bottom: none;
-}
+            </div>
 
+          </div>
 
-/* =========================================
-   PROGRAM BUTTON
-========================================= */
 
-.leaflet-control.programs-panel
-.program-button {
-  display: grid;
+        </div>
+      `;
 
-  grid-template-columns:
-    10px 1fr 18px;
 
-  align-items: center;
+      // ---------------------------------------
+      // DON'T LET PANEL INTERACTION MOVE MAP
+      // ---------------------------------------
 
-  gap: 10px;
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
 
-  width: 100%;
 
-  margin: 0;
+      // ---------------------------------------
+      // EXPAND INDIVIDUAL PROGRAMS
+      // ---------------------------------------
 
-  padding: 12px 14px;
+      const programButtons =
+        div.querySelectorAll(
+          ".program-button"
+        );
 
-  border: none;
 
-  border-radius: 0;
+      programButtons.forEach(button => {
 
-  background: white;
+        button.addEventListener(
+          "click",
+          function () {
 
-  color: #333333;
+            const item =
+              this.closest(
+                ".program-item"
+              );
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
 
-  font-size: 13px;
+            const currentlyOpen =
+              item.classList.contains(
+                "open"
+              );
 
-  font-weight: bold;
 
-  line-height: 1.25;
+            // Close every item first
 
-  text-align: left;
+            div
+              .querySelectorAll(
+                ".program-item"
+              )
+              .forEach(otherItem => {
 
-  cursor: pointer;
+                otherItem.classList.remove(
+                  "open"
+                );
 
-  appearance: none;
-  -webkit-appearance: none;
+                const arrow =
+                  otherItem.querySelector(
+                    ".program-arrow"
+                  );
 
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
+                if (arrow) {
+                  arrow.textContent = "+";
+                }
 
+              });
 
-/* =========================================
-   PROGRAM BUTTON HOVER
-========================================= */
 
-.leaflet-control.programs-panel
-.program-button:hover {
-  background: #edf7f8;
+            // Open the clicked item
 
-  color: #087f91;
-}
+            if (!currentlyOpen) {
 
+              item.classList.add(
+                "open"
+              );
 
-/* =========================================
-   LITTLE TEAL PROGRAM DOT
-========================================= */
+              const arrow =
+                item.querySelector(
+                  ".program-arrow"
+                );
 
-.leaflet-control.programs-panel
-.program-dot {
-  display: block;
+              if (arrow) {
+                arrow.textContent = "−";
+              }
 
-  width: 9px;
-  height: 9px;
+            }
 
-  background: #087f91;
+          }
+        );
 
-  border-radius: 50%;
-}
+      });
 
 
-/* =========================================
-   PROGRAM PLUS / MINUS
-========================================= */
+      // ---------------------------------------
+      // COLLAPSE WHOLE PANEL
+      // ---------------------------------------
 
-.leaflet-control.programs-panel
-.program-arrow {
-  color: #087f91;
+      const toggle =
+        div.querySelector(
+          ".programs-toggle"
+        );
 
-  font-size: 17px;
 
-  font-weight: normal;
+      const content =
+        div.querySelector(
+          ".programs-content"
+        );
 
-  text-align: center;
-}
 
+      toggle.addEventListener(
+        "click",
+        function () {
 
-/* =========================================
-   PROGRAM DESCRIPTION
-========================================= */
+          const collapsed =
+            div.classList.toggle(
+              "collapsed"
+            );
 
-.leaflet-control.programs-panel
-.program-description {
-  display: none;
 
-  padding:
-    0 15px 14px 34px;
+          if (collapsed) {
 
-  background: #edf7f8;
+            content.style.display =
+              "none";
 
-  color: #555555;
+            toggle.textContent =
+              "+";
 
-  font-size: 12px;
+            toggle.setAttribute(
+              "aria-label",
+              "Expand programs"
+            );
 
-  line-height: 1.45;
-}
+          }
 
+          else {
 
-/* =========================================
-   OPEN PROGRAM DESCRIPTION
-========================================= */
+            content.style.display =
+              "block";
 
-.leaflet-control.programs-panel
-.program-item.open
-.program-description {
-  display: block;
-}
+            toggle.textContent =
+              "−";
 
+            toggle.setAttribute(
+              "aria-label",
+              "Collapse programs"
+            );
 
-.leaflet-control.programs-panel
-.program-item.open
-.program-button {
-  background: #edf7f8;
+          }
 
-  color: #087f91;
-}
+        }
+      );
 
 
-/* =========================================
-   COLLAPSED PROGRAM PANEL
-========================================= */
+      return div;
 
-.leaflet-control.programs-panel.collapsed {
-  width: 250px;
-}
+    };
 
 
-/* =========================================
-   MOBILE
-========================================= */
+    programsControl.addTo(map);
 
-@media (max-width: 600px) {
 
-  header {
-    padding: 10px 12px;
-  }
+    // =========================================
+    // MAP LEGEND
+    // =========================================
 
+    const legend = L.control({
+      position: "bottomright"
+    });
 
-  header h1 {
-    font-size: 21px;
-  }
 
+    legend.onAdd = function () {
 
-  header p {
-    font-size: 14px;
-  }
+      const div = L.DomUtil.create(
+        "div",
+        "map-legend"
+      );
 
 
-  .leaflet-control.programs-panel {
-    width: 235px;
+      div.innerHTML = `
 
-    margin-left: 8px;
-    margin-top: 8px;
-  }
+        <div class="legend-title">
+          Map Guide
+        </div>
 
+        <div class="legend-instructions">
+          Hover for a name • Click for details
+        </div>
 
-  .leaflet-control.programs-panel
-  .programs-title {
-    font-size: 13px;
-  }
+        <div class="legend-row">
+          <span class="legend-dot teal"></span>
+          <span>Mapped project or program</span>
+        </div>
 
+        <div class="legend-row">
+          <span class="legend-dot orange"></span>
+          <span>Selected location</span>
+        </div>
 
-  .leaflet-control.programs-panel
-  .program-button {
-    font-size: 12px;
-  }
+        <div class="legend-row">
+          <span class="legend-line"></span>
+          <span>Blue River HUC8 boundary</span>
+        </div>
 
+      `;
 
-  .map-legend {
-    min-width: 150px;
 
-    padding: 9px 11px;
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
 
-    font-size: 11px;
-  }
 
-}
+      return div;
+
+    };
+
+
+    legend.addTo(map);
+
+
+    // =========================================
+    // KEEP WATERSHED BORDER VISIBLE
+    // =========================================
+
+    watershedLayer.bringToFront();
+
+  })
+
+
+  // ===========================================
+  // ERROR HANDLING
+  // ===========================================
+
+  .catch(error => {
+
+    console.error(
+      "Error loading Blue River watershed:",
+      error
+    );
+
+  });
