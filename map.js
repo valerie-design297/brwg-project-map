@@ -135,30 +135,19 @@ fetch(hucURL)
       `,
 
       iconSize: [32, 32],
-
       iconAnchor: [16, 16],
-
       popupAnchor: [0, -18]
 
     });
 
 
     // =========================================
-    // PROJECTS + PROGRAMS
+    // MAPPED PROJECTS / PROGRAMS
     //
-    // Text below matches the original
-    // BRWG static map.
-    //
-    // Coordinates are temporary and can be
-    // replaced with exact locations later.
+    // These remain geographic markers.
     // =========================================
 
     const projects = [
-
-
-      // ---------------------------------------
-      // SUMMIT COUNTY OUTDOOR COALITION
-      // ---------------------------------------
 
       {
         name:
@@ -172,10 +161,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // BLUE RIVER HABITAT RESTORATION
-      // ---------------------------------------
-
       {
         name:
           "Blue River Habitat Restoration Project",
@@ -187,10 +172,6 @@ fetch(hucURL)
           "This restoration project aims to restore habitat along the Blue River with the goal of improving the overall ecosystem and restoring Gold Medal status to the Blue River below the Dillon Dam."
       },
 
-
-      // ---------------------------------------
-      // RIVER WATCH
-      // ---------------------------------------
 
       {
         name:
@@ -204,58 +185,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // EDUCATIONAL PROGRAMMING
-      // ---------------------------------------
-
-      {
-        name:
-          "Educational Programming",
-
-        lat: 39.640,
-        lng: -106.095,
-
-        description:
-          "BRWG provides environmental and water policy educational programming to adults and youth throughout the year in Summit County."
-      },
-
-
-      // ---------------------------------------
-      // WILDFIRE READY WATERSHEDS
-      // ---------------------------------------
-
-      {
-        name:
-          "Wildfire Ready Watersheds",
-
-        lat: 39.610,
-        lng: -106.155,
-
-        description:
-          "BRWG has secured funding to bring a Wildfire Ready Action Plan to our Community to prepare for pre and post fire impacts."
-      },
-
-
-      // ---------------------------------------
-      // BLUE RIVER CLEAN-UP FESTIVAL
-      // ---------------------------------------
-
-      {
-        name:
-          "Blue River Clean-up Festival",
-
-        lat: 39.574,
-        lng: -106.098,
-
-        description:
-          "BRWG's annual county-wide River Cleanup brought 215 volunteers together to remove 4000 lbs of trash from our rivers."
-      },
-
-
-      // ---------------------------------------
-      // PERU CREEK MINE RESTORATION
-      // ---------------------------------------
-
       {
         name:
           "Peru Creek Mine Restoration",
@@ -268,10 +197,6 @@ fetch(hucURL)
       },
 
 
-      // ---------------------------------------
-      // TEN MILE CREEK
-      // ---------------------------------------
-
       {
         name:
           "Ten Mile Creek Restoration Project",
@@ -283,10 +208,6 @@ fetch(hucURL)
           "Ten Mile Creek Project addressed severe impacts from development and I-70. This project revitalized this important riparian corridor."
       },
 
-
-      // ---------------------------------------
-      // SWAN RIVER
-      // ---------------------------------------
 
       {
         name:
@@ -319,9 +240,9 @@ fetch(hucURL)
       ).addTo(map);
 
 
-      // =======================================
+      // ---------------------------------------
       // HOVER LABEL
-      // =======================================
+      // ---------------------------------------
 
       marker.bindTooltip(
         project.name,
@@ -334,9 +255,9 @@ fetch(hucURL)
       );
 
 
-      // =======================================
+      // ---------------------------------------
       // POPUP
-      // =======================================
+      // ---------------------------------------
 
       marker.bindPopup(`
         <div class="project-popup">
@@ -353,13 +274,11 @@ fetch(hucURL)
       `);
 
 
-      // =======================================
+      // ---------------------------------------
       // CLICK MARKER
-      // =======================================
+      // ---------------------------------------
 
       marker.on("click", function () {
-
-        // Reset previously selected marker
 
         if (selectedMarker) {
 
@@ -374,19 +293,15 @@ fetch(hucURL)
               );
 
             if (oldCircle) {
-
               oldCircle.classList.remove(
                 "selected"
               );
-
             }
 
           }
 
         }
 
-
-        // Highlight clicked marker
 
         const markerElement =
           marker.getElement();
@@ -399,11 +314,9 @@ fetch(hucURL)
             );
 
           if (circle) {
-
             circle.classList.add(
               "selected"
             );
-
           }
 
         }
@@ -414,9 +327,9 @@ fetch(hucURL)
       });
 
 
-      // =======================================
+      // ---------------------------------------
       // POPUP CLOSED
-      // =======================================
+      // ---------------------------------------
 
       marker.on("popupclose", function () {
 
@@ -431,25 +344,315 @@ fetch(hucURL)
             );
 
           if (circle) {
-
             circle.classList.remove(
               "selected"
             );
-
           }
 
         }
 
 
         if (selectedMarker === marker) {
-
           selectedMarker = null;
-
         }
 
       });
 
     });
+
+
+    // =========================================
+    // WATERSHED-WIDE PROGRAMS PANEL
+    // =========================================
+
+    const programsControl = L.control({
+      position: "topleft"
+    });
+
+
+    programsControl.onAdd = function () {
+
+      const div = L.DomUtil.create(
+        "div",
+        "programs-panel"
+      );
+
+
+      div.innerHTML = `
+
+        <div class="programs-header">
+
+          <div>
+            <div class="programs-title">
+              Watershed-Wide Programs
+            </div>
+
+            <div class="programs-subtitle">
+              Programs serving Summit County
+            </div>
+          </div>
+
+          <button
+            class="programs-toggle"
+            type="button"
+            aria-label="Collapse programs"
+          >
+            −
+          </button>
+
+        </div>
+
+
+        <div class="programs-content">
+
+
+          <!-- EDUCATIONAL PROGRAMMING -->
+
+          <div class="program-item">
+
+            <button class="program-button">
+
+              <span class="program-dot"></span>
+
+              <span>
+                Educational Programming
+              </span>
+
+              <span class="program-arrow">
+                +
+              </span>
+
+            </button>
+
+
+            <div class="program-description">
+
+              BRWG provides environmental and water
+              policy educational programming to adults
+              and youth throughout the year in Summit
+              County.
+
+            </div>
+
+          </div>
+
+
+          <!-- WILDFIRE READY WATERSHEDS -->
+
+          <div class="program-item">
+
+            <button class="program-button">
+
+              <span class="program-dot"></span>
+
+              <span>
+                Wildfire Ready Watersheds
+              </span>
+
+              <span class="program-arrow">
+                +
+              </span>
+
+            </button>
+
+
+            <div class="program-description">
+
+              BRWG has secured funding to bring a
+              Wildfire Ready Action Plan to our
+              Community to prepare for pre and post
+              fire impacts.
+
+            </div>
+
+          </div>
+
+
+          <!-- BLUE RIVER CLEAN-UP FESTIVAL -->
+
+          <div class="program-item">
+
+            <button class="program-button">
+
+              <span class="program-dot"></span>
+
+              <span>
+                Blue River Clean-up Festival
+              </span>
+
+              <span class="program-arrow">
+                +
+              </span>
+
+            </button>
+
+
+            <div class="program-description">
+
+              BRWG's annual county-wide River Cleanup
+              brought 215 volunteers together to remove
+              4000 lbs of trash from our rivers.
+
+            </div>
+
+          </div>
+
+
+        </div>
+      `;
+
+
+      // ---------------------------------------
+      // DON'T LET PANEL INTERACTION MOVE MAP
+      // ---------------------------------------
+
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
+
+
+      // ---------------------------------------
+      // EXPAND INDIVIDUAL PROGRAMS
+      // ---------------------------------------
+
+      const programButtons =
+        div.querySelectorAll(
+          ".program-button"
+        );
+
+
+      programButtons.forEach(button => {
+
+        button.addEventListener(
+          "click",
+          function () {
+
+            const item =
+              this.closest(
+                ".program-item"
+              );
+
+
+            const currentlyOpen =
+              item.classList.contains(
+                "open"
+              );
+
+
+            // Close all programs first
+
+            div
+              .querySelectorAll(
+                ".program-item"
+              )
+              .forEach(otherItem => {
+
+                otherItem.classList.remove(
+                  "open"
+                );
+
+                const arrow =
+                  otherItem.querySelector(
+                    ".program-arrow"
+                  );
+
+                if (arrow) {
+                  arrow.textContent = "+";
+                }
+
+              });
+
+
+            // Open clicked program
+
+            if (!currentlyOpen) {
+
+              item.classList.add(
+                "open"
+              );
+
+              const arrow =
+                item.querySelector(
+                  ".program-arrow"
+                );
+
+              if (arrow) {
+                arrow.textContent = "−";
+              }
+
+            }
+
+          }
+        );
+
+      });
+
+
+      // ---------------------------------------
+      // COLLAPSE WHOLE PANEL
+      // ---------------------------------------
+
+      const toggle =
+        div.querySelector(
+          ".programs-toggle"
+        );
+
+
+      const content =
+        div.querySelector(
+          ".programs-content"
+        );
+
+
+      toggle.addEventListener(
+        "click",
+        function () {
+
+          const collapsed =
+            div.classList.toggle(
+              "collapsed"
+            );
+
+
+          if (collapsed) {
+
+            content.style.display =
+              "none";
+
+            toggle.textContent =
+              "+";
+
+            toggle.setAttribute(
+              "aria-label",
+              "Expand programs"
+            );
+
+          }
+
+          else {
+
+            content.style.display =
+              "block";
+
+            toggle.textContent =
+              "−";
+
+            toggle.setAttribute(
+              "aria-label",
+              "Collapse programs"
+            );
+
+          }
+
+        }
+      );
+
+
+      return div;
+
+    };
+
+
+    programsControl.addTo(map);
 
 
     // =========================================
@@ -470,6 +673,7 @@ fetch(hucURL)
 
 
       div.innerHTML = `
+
         <div class="legend-title">
           Map Guide
         </div>
@@ -480,7 +684,7 @@ fetch(hucURL)
 
         <div class="legend-row">
           <span class="legend-dot teal"></span>
-          <span>Project or program</span>
+          <span>Mapped project or program</span>
         </div>
 
         <div class="legend-row">
@@ -492,6 +696,7 @@ fetch(hucURL)
           <span class="legend-line"></span>
           <span>Blue River HUC8 boundary</span>
         </div>
+
       `;
 
 
