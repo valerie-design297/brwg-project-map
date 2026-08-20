@@ -613,12 +613,23 @@ main {
 }
 
 
+/* =========================================
+   OPEN PROGRAM
+========================================= */
+
 .leaflet-control.programs-panel
 .program-item.open
 .program-button {
-  background: #edf7f8;
+  background: #e6f3f5;
 
   color: #087f91;
+}
+
+
+.leaflet-control.programs-panel
+.program-item.open
+.program-description {
+  background: #e6f3f5;
 }
 
 
@@ -1023,41 +1034,4 @@ main {
     min-width: 130px;
   }
 
-}
-
-/* =========================================
-   ACTIVE / OPEN PROGRAM ITEM
-========================================= */
-
-.leaflet-control.programs-panel
-.program-item {
-  position: relative;
-}
-
-
-.leaflet-control.programs-panel
-.program-item.open
-.program-button {
-  background: #e6f3f5;
-  color: #087f91;
-}
-
-
-/* Teal accent bar on active item */
-
-.leaflet-control.programs-panel
-.program-item.open::before {
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  bottom: 0;
-
-  width: 4px;
-
-  background: #087f91;
-
-  z-index: 10;
 }
