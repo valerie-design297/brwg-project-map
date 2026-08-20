@@ -332,3 +332,37 @@ main {
     2px 2px 4px
     rgba(0, 0, 0, 0.1);
 }
+
+
+/* =========================================
+   PROJECT HOVER LABELS
+========================================= */
+
+.project-tooltip {
+  background: #087f91;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 6px;
+
+  padding: 7px 10px;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 2px 7px
+    rgba(0, 0, 0, 0.25);
+}
+
+
+/* Tooltip arrow */
+
+.leaflet-tooltip-right.project-tooltip::before {
+  border-right-color: #087f91;
+}
