@@ -13,7 +13,7 @@ const map = L.map("map", {
 }).setView([39.55, -106.15], 9);
 
 
-// Store watershed bounds for reset button
+// Store watershed bounds for Reset View
 let watershedBounds = null;
 
 
@@ -129,15 +129,12 @@ resetControl.onAdd = function () {
   `;
 
 
-  // Stop button clicks from moving the map
   L.DomEvent.disableClickPropagation(div);
   L.DomEvent.disableScrollPropagation(div);
 
 
   const button =
-    div.querySelector(
-      ".reset-view-button"
-    );
+    div.querySelector(".reset-view-button");
 
 
   button.addEventListener(
@@ -190,12 +187,10 @@ fetch(hucURL)
   .then(response => {
 
     if (!response.ok) {
-
       throw new Error(
         "USGS request failed: " +
         response.status
       );
-
     }
 
     return response.json();
@@ -230,13 +225,9 @@ fetch(hucURL)
       {
 
         style: {
-
           fillColor: "#808080",
-
           fillOpacity: 0.45,
-
           stroke: false
-
         },
 
         interactive: false
@@ -256,15 +247,10 @@ fetch(hucURL)
         {
 
           style: {
-
             color: "#f28c28",
-
             weight: 5,
-
             opacity: 1,
-
             fillOpacity: 0
-
           }
 
         }
@@ -427,8 +413,7 @@ fetch(hucURL)
 
 
       // =======================================
-      // EXPANDED TEST POPUP
-      // BLUE RIVER HABITAT RESTORATION
+      // EXPANDED BLUE RIVER POPUP
       // =======================================
 
       if (
@@ -676,7 +661,9 @@ fetch(hucURL)
           <div class="programs-content">
 
 
-            <!-- SUMMIT COUNTY OUTDOOR COALITION -->
+            <!-- =================================
+                 SUMMIT COUNTY OUTDOOR COALITION
+            ================================== -->
 
             <div class="program-item">
 
@@ -709,9 +696,12 @@ fetch(hucURL)
             </div>
 
 
-            <!-- RIVER WATCH -->
+            <!-- =================================
+                 RIVER WATCH
+                 EXPANDED TEST PROGRAM
+            ================================== -->
 
-            <div class="program-item">
+            <div class="program-item program-item-rich">
 
               <button
                 class="program-button"
@@ -731,18 +721,57 @@ fetch(hucURL)
               </button>
 
 
-              <div class="program-description">
+              <div class="program-description program-rich-content">
 
-                Through CPW's River Watch and our citizen
-                science program BRWG ensures water quality
-                is regularly monitored.
+
+                <!-- PHOTO -->
+
+                <div class="program-photo-placeholder">
+
+                  <div class="program-photo-icon">
+                    ▧
+                  </div>
+
+                  <div class="program-photo-text">
+                    Program photo coming soon
+                  </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="program-rich-description">
+
+                  Through CPW's River Watch and our citizen
+                  science program BRWG ensures water quality
+                  is regularly monitored.
+
+                </div>
+
+
+                <!-- LINKS -->
+
+                <div class="program-resources">
+
+                  <div class="program-resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="program-resource-placeholder">
+                    Program links coming soon
+                  </div>
+
+                </div>
 
               </div>
 
             </div>
 
 
-            <!-- EDUCATIONAL PROGRAMMING -->
+            <!-- =================================
+                 EDUCATIONAL PROGRAMMING
+            ================================== -->
 
             <div class="program-item">
 
@@ -775,7 +804,9 @@ fetch(hucURL)
             </div>
 
 
-            <!-- WILDFIRE READY WATERSHEDS -->
+            <!-- =================================
+                 WILDFIRE READY WATERSHEDS
+            ================================== -->
 
             <div class="program-item">
 
@@ -808,7 +839,9 @@ fetch(hucURL)
             </div>
 
 
-            <!-- BLUE RIVER CLEAN-UP FESTIVAL -->
+            <!-- =================================
+                 BLUE RIVER CLEAN-UP FESTIVAL
+            ================================== -->
 
             <div class="program-item">
 
@@ -910,10 +943,7 @@ fetch(hucURL)
 
 
                       if (arrow) {
-
-                        arrow.textContent =
-                          "+";
-
+                        arrow.textContent = "+";
                       }
 
                     }
@@ -938,10 +968,7 @@ fetch(hucURL)
 
 
                   if (arrow) {
-
-                    arrow.textContent =
-                      "−";
-
+                    arrow.textContent = "−";
                   }
 
                 }
