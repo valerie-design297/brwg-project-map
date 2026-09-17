@@ -235,7 +235,7 @@ main {
 
 .project-popup {
   min-width: 230px;
-  max-width: 280px;
+  max-width: 330px;
 }
 
 
@@ -276,6 +276,31 @@ main {
 .project-popup-expanded {
   width: 330px;
   max-width: 330px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   ACTUAL PROJECT PHOTO
+========================================= */
+
+.project-photo {
+  display: block;
+
+  width: 100%;
+  height: 160px;
+  max-height: 160px;
+
+  margin-top: 11px;
+  margin-bottom: 13px;
+
+  box-sizing: border-box;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 8px;
 }
 
 
@@ -291,7 +316,7 @@ main {
   justify-content: center;
 
   width: 100%;
-  height: 155px;
+  height: 160px;
 
   margin-top: 11px;
   margin-bottom: 13px;
@@ -307,7 +332,9 @@ main {
 }
 
 
-.photo-placeholder-icon {
+/* Supports both the old and new class names */
+.photo-placeholder-icon,
+.project-photo-icon {
   margin-bottom: 5px;
 
   font-size: 27px;
@@ -316,7 +343,8 @@ main {
 }
 
 
-.photo-placeholder-text {
+.photo-placeholder-text,
+.project-photo-text {
   font-size: 12px;
   font-weight: bold;
 }
@@ -360,11 +388,35 @@ main {
 }
 
 
-.resource-placeholder {
+.resource-placeholder,
+.project-resource-placeholder {
   color: #888888;
 
   font-size: 12px;
   font-style: italic;
+}
+
+
+/* =========================================
+   ACTUAL PROJECT RESOURCE LINKS
+========================================= */
+
+.project-resource-link {
+  display: block;
+
+  margin: 5px 0;
+
+  color: #087f91;
+
+  font-size: 12px;
+  font-weight: bold;
+
+  text-decoration: none;
+}
+
+
+.project-resource-link:hover {
+  text-decoration: underline;
 }
 
 
@@ -587,7 +639,7 @@ main {
 
 
 /* =========================================
-   NORMAL PROGRAM DESCRIPTION
+   PROGRAM DESCRIPTION
 ========================================= */
 
 .leaflet-control.programs-panel
@@ -634,13 +686,35 @@ main {
 
 
 /* =========================================
-   RICH RIVER WATCH PROGRAM
+   RICH PROGRAM CONTENT
 ========================================= */
 
 .leaflet-control.programs-panel
 .program-rich-content {
   padding:
     0 14px 15px 14px;
+}
+
+
+/* =========================================
+   ACTUAL PROGRAM PHOTO
+========================================= */
+
+.program-photo {
+  display: block;
+
+  width: 100%;
+  height: 140px;
+  max-height: 140px;
+
+  margin-bottom: 12px;
+
+  box-sizing: border-box;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 7px;
 }
 
 
@@ -656,7 +730,7 @@ main {
   justify-content: center;
 
   width: 100%;
-  height: 125px;
+  height: 140px;
 
   margin-bottom: 12px;
 
@@ -733,6 +807,29 @@ main {
 
   font-size: 11px;
   font-style: italic;
+}
+
+
+/* =========================================
+   ACTUAL PROGRAM RESOURCE LINKS
+========================================= */
+
+.program-resource-link {
+  display: block;
+
+  margin: 5px 0;
+
+  color: #087f91;
+
+  font-size: 11px;
+  font-weight: bold;
+
+  text-decoration: none;
+}
+
+
+.program-resource-link:hover {
+  text-decoration: underline;
 }
 
 
@@ -1032,6 +1129,34 @@ main {
 
   .leaflet-control-layers {
     min-width: 130px;
+  }
+
+
+  .project-popup-expanded {
+    width: 260px;
+    max-width: 260px;
+  }
+
+
+  .project-photo {
+    height: 135px;
+    max-height: 135px;
+  }
+
+
+  .project-photo-placeholder {
+    height: 135px;
+  }
+
+
+  .program-photo {
+    height: 115px;
+    max-height: 115px;
+  }
+
+
+  .program-photo-placeholder {
+    height: 115px;
   }
 
 }
