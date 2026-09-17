@@ -358,8 +358,8 @@ fetch(hucURL)
 
         locations: [
           {
-            lat: 39.575,
-            lng: -106.275
+            lat: 39.503503,
+            lng: -106.140115
           }
         ],
 
