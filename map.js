@@ -83,7 +83,7 @@ const projects = [
     name:
       "Blue River Habitat Restoration Project",
 
-    photo: "",
+    photo: "images/salmon.avif",
 
     locations: [
       {
