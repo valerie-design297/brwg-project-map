@@ -397,22 +397,6 @@ fetch(hucURL)
 
         description:
           "North Fork of the Swan River Native Cutthroat Conservation Project."
-      },
-
-
-      {
-        name:
-          "Upper Blue River Restoration Working Group",
-
-        locations: [
-          {
-            lat: 39.475823,
-            lng: -106.046487
-          }
-        ],
-
-        description:
-          "Upper Blue River Restoration Working Group."
       }
 
     ];
@@ -422,256 +406,325 @@ fetch(hucURL)
     // ADD PROJECT MARKERS
     // =========================================
 
-    let selectedMarker = null;
+    let selectedMarkers = [];
+
+
+    // Store markers belonging to each project.
+    // This allows projects with multiple locations
+    // to highlight all of their markers together.
+
+    const projectMarkers =
+      new Map();
 
 
     projects.forEach(project => {
 
-      project.locations.forEach(location => {
-
-        const marker =
-          L.marker(
-            [
-              location.lat,
-              location.lng
-            ],
-            {
-              icon: projectIcon
-            }
-          )
-          .addTo(map);
+      const markersForThisProject =
+        [];
 
 
-        // ---------------------------------------
-        // HOVER LABEL
-        // ---------------------------------------
+      project.locations.forEach(
+        location => {
 
-        let tooltipLabel =
-          project.name;
+          const marker =
+            L.marker(
+              [
+                location.lat,
+                location.lng
+              ],
+              {
+                icon: projectIcon
+              }
+            )
+            .addTo(map);
 
 
-        if (location.label) {
-
-          tooltipLabel +=
-            " — " + location.label;
-
-        }
+          markersForThisProject.push(
+            marker
+          );
 
 
-        marker.bindTooltip(
-          tooltipLabel,
-          {
-            direction: "right",
-            offset: [15, 0],
-            opacity: 1,
-            className: "project-tooltip"
+          // ---------------------------------------
+          // HOVER LABEL
+          // ---------------------------------------
+
+          let tooltipLabel =
+            project.name;
+
+
+          if (location.label) {
+
+            tooltipLabel +=
+              " — " +
+              location.label;
+
           }
-        );
 
 
-        // ---------------------------------------
-        // POPUP CONTENT
-        // ---------------------------------------
-
-        let popupContent;
-
-
-        // =======================================
-        // EXPANDED BLUE RIVER POPUP
-        // =======================================
-
-        if (
-          project.name ===
-          "Blue River Habitat Restoration Project"
-        ) {
-
-          popupContent = `
-            <div class="project-popup project-popup-expanded">
-
-              <h3>
-                ${project.name}
-              </h3>
+          marker.bindTooltip(
+            tooltipLabel,
+            {
+              direction: "right",
+              offset: [15, 0],
+              opacity: 1,
+              className:
+                "project-tooltip"
+            }
+          );
 
 
-              <div class="project-photo-placeholder">
+          // ---------------------------------------
+          // POPUP CONTENT
+          // ---------------------------------------
 
-                <div class="photo-placeholder-icon">
-                  ▧
+          let popupContent;
+
+
+          // =======================================
+          // EXPANDED BLUE RIVER POPUP
+          // =======================================
+
+          if (
+            project.name ===
+            "Blue River Habitat Restoration Project"
+          ) {
+
+            popupContent = `
+              <div class="project-popup project-popup-expanded">
+
+                <h3>
+                  ${project.name}
+                </h3>
+
+
+                <div class="project-photo-placeholder">
+
+                  <div class="photo-placeholder-icon">
+                    ▧
+                  </div>
+
+                  <div class="photo-placeholder-text">
+                    Project photo coming soon
+                  </div>
+
                 </div>
 
-                <div class="photo-placeholder-text">
-                  Project photo coming soon
+
+                <div class="project-description">
+
+                  <p>
+                    ${project.description}
+                  </p>
+
+                </div>
+
+
+                <div class="project-resources">
+
+                  <div class="resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="resource-placeholder">
+                    Project links coming soon
+                  </div>
+
                 </div>
 
               </div>
+            `;
+
+          }
 
 
-              <div class="project-description">
+          // =======================================
+          // NORMAL POPUPS
+          // =======================================
+
+          else {
+
+            popupContent = `
+              <div class="project-popup">
+
+                <h3>
+                  ${project.name}
+                </h3>
 
                 <p>
                   ${project.description}
                 </p>
 
               </div>
+            `;
 
-
-              <div class="project-resources">
-
-                <div class="resources-title">
-                  Resources & Links
-                </div>
-
-                <div class="resource-placeholder">
-                  Project links coming soon
-                </div>
-
-              </div>
-
-            </div>
-          `;
-
-        }
-
-
-        // =======================================
-        // NORMAL POPUPS
-        // =======================================
-
-        else {
-
-          popupContent = `
-            <div class="project-popup">
-
-              <h3>
-                ${project.name}
-              </h3>
-
-              <p>
-                ${project.description}
-              </p>
-
-            </div>
-          `;
-
-        }
-
-
-        marker.bindPopup(
-          popupContent,
-          {
-            maxWidth: 380
           }
-        );
 
 
-        // ---------------------------------------
-        // CLICK MARKER
-        // ---------------------------------------
-
-        marker.on(
-          "click",
-          function () {
-
-            if (selectedMarker) {
-
-              const oldElement =
-                selectedMarker.getElement();
+          marker.bindPopup(
+            popupContent,
+            {
+              maxWidth: 380
+            }
+          );
 
 
-              if (oldElement) {
+          // ---------------------------------------
+          // CLICK MARKER
+          // ---------------------------------------
 
-                const oldCircle =
-                  oldElement.querySelector(
-                    ".project-marker"
-                  );
+          marker.on(
+            "click",
+            function () {
+
+              // Remove highlighting from
+              // previously selected project.
+
+              selectedMarkers.forEach(
+                selectedMarker => {
+
+                  const oldElement =
+                    selectedMarker
+                      .getElement();
 
 
-                if (oldCircle) {
+                  if (oldElement) {
 
-                  oldCircle.classList.remove(
-                    "selected"
+                    const oldCircle =
+                      oldElement
+                        .querySelector(
+                          ".project-marker"
+                        );
+
+
+                    if (oldCircle) {
+
+                      oldCircle
+                        .classList
+                        .remove(
+                          "selected"
+                        );
+
+                    }
+
+                  }
+
+                }
+              );
+
+
+              selectedMarkers = [];
+
+
+              // Highlight every marker
+              // belonging to clicked project.
+
+              const relatedMarkers =
+                projectMarkers.get(
+                  project.name
+                ) || [marker];
+
+
+              relatedMarkers.forEach(
+                relatedMarker => {
+
+                  const markerElement =
+                    relatedMarker
+                      .getElement();
+
+
+                  if (markerElement) {
+
+                    const circle =
+                      markerElement
+                        .querySelector(
+                          ".project-marker"
+                        );
+
+
+                    if (circle) {
+
+                      circle
+                        .classList
+                        .add(
+                          "selected"
+                        );
+
+                    }
+
+                  }
+
+
+                  selectedMarkers.push(
+                    relatedMarker
                   );
 
                 }
-
-              }
-
-            }
-
-
-            const markerElement =
-              marker.getElement();
-
-
-            if (markerElement) {
-
-              const circle =
-                markerElement.querySelector(
-                  ".project-marker"
-                );
-
-
-              if (circle) {
-
-                circle.classList.add(
-                  "selected"
-                );
-
-              }
+              );
 
             }
+          );
 
 
-            selectedMarker =
-              marker;
+          // ---------------------------------------
+          // POPUP CLOSED
+          // ---------------------------------------
 
-          }
-        );
+          marker.on(
+            "popupclose",
+            function () {
 
-
-        // ---------------------------------------
-        // POPUP CLOSED
-        // ---------------------------------------
-
-        marker.on(
-          "popupclose",
-          function () {
-
-            const markerElement =
-              marker.getElement();
+              const relatedMarkers =
+                projectMarkers.get(
+                  project.name
+                ) || [marker];
 
 
-            if (markerElement) {
+              relatedMarkers.forEach(
+                relatedMarker => {
 
-              const circle =
-                markerElement.querySelector(
-                  ".project-marker"
-                );
+                  const markerElement =
+                    relatedMarker
+                      .getElement();
 
 
-              if (circle) {
+                  if (markerElement) {
 
-                circle.classList.remove(
-                  "selected"
-                );
+                    const circle =
+                      markerElement
+                        .querySelector(
+                          ".project-marker"
+                        );
 
-              }
+
+                    if (circle) {
+
+                      circle
+                        .classList
+                        .remove(
+                          "selected"
+                        );
+
+                    }
+
+                  }
+
+                }
+              );
+
+
+              selectedMarkers = [];
 
             }
+          );
+
+        }
+      );
 
 
-            if (
-              selectedMarker === marker
-            ) {
-
-              selectedMarker = null;
-
-            }
-
-          }
-        );
-
-      });
+      projectMarkers.set(
+        project.name,
+        markersForThisProject
+      );
 
     });
 
