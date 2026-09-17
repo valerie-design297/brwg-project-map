@@ -409,10 +409,6 @@ fetch(hucURL)
     let selectedMarkers = [];
 
 
-    // Store markers belonging to each project.
-    // This allows projects with multiple locations
-    // to highlight all of their markers together.
-
     const projectMarkers =
       new Map();
 
@@ -576,9 +572,6 @@ fetch(hucURL)
             "click",
             function () {
 
-              // Remove highlighting from
-              // previously selected project.
-
               selectedMarkers.forEach(
                 selectedMarker => {
 
@@ -614,9 +607,6 @@ fetch(hucURL)
 
               selectedMarkers = [];
 
-
-              // Highlight every marker
-              // belonging to clicked project.
 
               const relatedMarkers =
                 projectMarkers.get(
@@ -784,7 +774,7 @@ fetch(hucURL)
                  SUMMIT COUNTY OUTDOOR COALITION
             ================================== -->
 
-            <div class="program-item">
+            <div class="program-item program-item-rich">
 
               <button
                 class="program-button"
@@ -804,11 +794,48 @@ fetch(hucURL)
               </button>
 
 
-              <div class="program-description">
+              <div class="program-description program-rich-content">
 
-                Part of CPW's Regional Partnership Initiative,
-                SCOC's works to ensure collaborative solutions
-                for conservation and recreation.
+
+                <!-- PHOTO -->
+
+                <div class="program-photo-placeholder">
+
+                  <div class="program-photo-icon">
+                    ▧
+                  </div>
+
+                  <div class="program-photo-text">
+                    Program photo coming soon
+                  </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="program-rich-description">
+
+                  Part of CPW's Regional Partnership Initiative,
+                  SCOC's works to ensure collaborative solutions
+                  for conservation and recreation.
+
+                </div>
+
+
+                <!-- LINKS -->
+
+                <div class="program-resources">
+
+                  <div class="program-resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="program-resource-placeholder">
+                    Program links coming soon
+                  </div>
+
+                </div>
 
               </div>
 
@@ -817,7 +844,6 @@ fetch(hucURL)
 
             <!-- =================================
                  RIVER WATCH
-                 EXPANDED TEST PROGRAM
             ================================== -->
 
             <div class="program-item program-item-rich">
@@ -892,7 +918,7 @@ fetch(hucURL)
                  EDUCATIONAL PROGRAMMING
             ================================== -->
 
-            <div class="program-item">
+            <div class="program-item program-item-rich">
 
               <button
                 class="program-button"
@@ -912,11 +938,48 @@ fetch(hucURL)
               </button>
 
 
-              <div class="program-description">
+              <div class="program-description program-rich-content">
 
-                BRWG provides environmental and water policy
-                educational programming to adults and youth
-                throughout the year in Summit County.
+
+                <!-- PHOTO -->
+
+                <div class="program-photo-placeholder">
+
+                  <div class="program-photo-icon">
+                    ▧
+                  </div>
+
+                  <div class="program-photo-text">
+                    Program photo coming soon
+                  </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="program-rich-description">
+
+                  BRWG provides environmental and water policy
+                  educational programming to adults and youth
+                  throughout the year in Summit County.
+
+                </div>
+
+
+                <!-- LINKS -->
+
+                <div class="program-resources">
+
+                  <div class="program-resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="program-resource-placeholder">
+                    Program links coming soon
+                  </div>
+
+                </div>
 
               </div>
 
@@ -927,7 +990,7 @@ fetch(hucURL)
                  WILDFIRE READY WATERSHEDS
             ================================== -->
 
-            <div class="program-item">
+            <div class="program-item program-item-rich">
 
               <button
                 class="program-button"
@@ -947,11 +1010,48 @@ fetch(hucURL)
               </button>
 
 
-              <div class="program-description">
+              <div class="program-description program-rich-content">
 
-                BRWG has secured funding to bring a Wildfire
-                Ready Action Plan to our Community to prepare
-                for pre and post fire impacts.
+
+                <!-- PHOTO -->
+
+                <div class="program-photo-placeholder">
+
+                  <div class="program-photo-icon">
+                    ▧
+                  </div>
+
+                  <div class="program-photo-text">
+                    Program photo coming soon
+                  </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="program-rich-description">
+
+                  BRWG has secured funding to bring a Wildfire
+                  Ready Action Plan to our Community to prepare
+                  for pre and post fire impacts.
+
+                </div>
+
+
+                <!-- LINKS -->
+
+                <div class="program-resources">
+
+                  <div class="program-resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="program-resource-placeholder">
+                    Program links coming soon
+                  </div>
+
+                </div>
 
               </div>
 
@@ -962,7 +1062,7 @@ fetch(hucURL)
                  BLUE RIVER CLEAN-UP FESTIVAL
             ================================== -->
 
-            <div class="program-item">
+            <div class="program-item program-item-rich">
 
               <button
                 class="program-button"
@@ -982,11 +1082,48 @@ fetch(hucURL)
               </button>
 
 
-              <div class="program-description">
+              <div class="program-description program-rich-content">
 
-                BRWG's annual county-wide River Cleanup
-                brought 215 volunteers together to remove
-                4000 lbs of trash from our rivers.
+
+                <!-- PHOTO -->
+
+                <div class="program-photo-placeholder">
+
+                  <div class="program-photo-icon">
+                    ▧
+                  </div>
+
+                  <div class="program-photo-text">
+                    Program photo coming soon
+                  </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="program-rich-description">
+
+                  BRWG's annual county-wide River Cleanup
+                  brought 215 volunteers together to remove
+                  4000 lbs of trash from our rivers.
+
+                </div>
+
+
+                <!-- LINKS -->
+
+                <div class="program-resources">
+
+                  <div class="program-resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="program-resource-placeholder">
+                    Program links coming soon
+                  </div>
+
+                </div>
 
               </div>
 
