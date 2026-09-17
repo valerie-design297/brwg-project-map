@@ -1,3 +1,313 @@
+// =============================================
+// BLUE RIVER WATERSHED GROUP
+// Projects and Programs Interactive Map
+// =============================================
+
+
+// ---------------------------------------------
+// CREATE MAP
+// ---------------------------------------------
+
+const map = L.map("map", {
+  zoomControl: true
+}).setView([39.55, -106.15], 9);
+
+
+// Store watershed bounds for Reset View
+let watershedBounds = null;
+
+
+// =============================================
+// BASEMAPS
+// =============================================
+
+
+// ---------------------------------------------
+// STANDARD MAP
+// ---------------------------------------------
+
+const standardMap = L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }
+);
+
+
+// ---------------------------------------------
+// TOPOGRAPHIC MAP
+// ---------------------------------------------
+
+const topoMap = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+  {
+    maxZoom: 19,
+    attribution: "Tiles &copy; Esri"
+  }
+);
+
+
+// ---------------------------------------------
+// SATELLITE MAP
+// ---------------------------------------------
+
+const satelliteMap = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  {
+    maxZoom: 19,
+    attribution: "Tiles &copy; Esri"
+  }
+);
+
+
+// ---------------------------------------------
+// DEFAULT BASEMAP
+// ---------------------------------------------
+
+standardMap.addTo(map);
+
+
+// ---------------------------------------------
+// BASEMAP SWITCHER
+// ---------------------------------------------
+
+const baseMaps = {
+  "Standard": standardMap,
+  "Topographic": topoMap,
+  "Satellite": satelliteMap
+};
+
+
+L.control.layers(
+  baseMaps,
+  null,
+  {
+    position: "topright",
+    collapsed: false
+  }
+).addTo(map);
+
+
+// =============================================
+// SCALE BAR
+// =============================================
+
+L.control.scale({
+  position: "bottomleft",
+  metric: true,
+  imperial: true,
+  maxWidth: 130
+}).addTo(map);
+
+
+// =============================================
+// RESET VIEW BUTTON
+// =============================================
+
+const resetControl = L.control({
+  position: "bottomleft"
+});
+
+
+resetControl.onAdd = function () {
+
+  const div = L.DomUtil.create(
+    "div",
+    "reset-view-control"
+  );
+
+
+  div.innerHTML = `
+    <button
+      class="reset-view-button"
+      type="button"
+      title="Return to the full Blue River watershed"
+    >
+      ↺ Reset View
+    </button>
+  `;
+
+
+  L.DomEvent.disableClickPropagation(div);
+  L.DomEvent.disableScrollPropagation(div);
+
+
+  const button =
+    div.querySelector(".reset-view-button");
+
+
+  button.addEventListener(
+    "click",
+    function () {
+
+      if (watershedBounds) {
+
+        map.fitBounds(
+          watershedBounds,
+          {
+            padding: [35, 35]
+          }
+        );
+
+      }
+
+    }
+  );
+
+
+  return div;
+
+};
+
+
+resetControl.addTo(map);
+
+
+// =============================================
+// BLUE RIVER HUC8
+// HUC8: 14010002
+// =============================================
+
+const hucURL =
+  "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4/query" +
+  "?where=HUC8%3D%2714010002%27" +
+  "&outFields=*" +
+  "&returnGeometry=true" +
+  "&outSR=4326" +
+  "&f=geojson";
+
+
+// =============================================
+// LOAD WATERSHED
+// =============================================
+
+fetch(hucURL)
+
+  .then(response => {
+
+    if (!response.ok) {
+      throw new Error(
+        "USGS request failed: " +
+        response.status
+      );
+    }
+
+    return response.json();
+
+  })
+
+
+  .then(data => {
+
+    if (
+      !data.features ||
+      data.features.length === 0
+    ) {
+
+      throw new Error(
+        "USGS returned no watershed features."
+      );
+
+    }
+
+
+    // =========================================
+    // GRAY OUT EVERYTHING OUTSIDE HUC8
+    // =========================================
+
+    const outsideMask =
+      turf.mask(data);
+
+
+    L.geoJSON(
+      outsideMask,
+      {
+
+        style: {
+          fillColor: "#808080",
+          fillOpacity: 0.45,
+          stroke: false
+        },
+
+        interactive: false
+
+      }
+
+    ).addTo(map);
+
+
+    // =========================================
+    // WATERSHED BOUNDARY
+    // =========================================
+
+    const watershedLayer =
+      L.geoJSON(
+        data,
+        {
+
+          style: {
+            color: "#f28c28",
+            weight: 5,
+            opacity: 1,
+            fillOpacity: 0
+          }
+
+        }
+      ).addTo(map);
+
+
+    watershedLayer.bringToFront();
+
+
+    // =========================================
+    // STORE + ZOOM TO WATERSHED
+    // =========================================
+
+    const bounds =
+      watershedLayer.getBounds();
+
+
+    watershedBounds = bounds;
+
+
+    if (bounds.isValid()) {
+
+      map.fitBounds(
+        bounds,
+        {
+          padding: [35, 35]
+        }
+      );
+
+    }
+
+
+    // =========================================
+    // PROJECT MARKER DESIGN
+    // =========================================
+
+    const projectIcon =
+      L.divIcon({
+
+        className:
+          "project-marker-container",
+
+        html: `
+          <div class="project-marker">
+            <span class="marker-center"></span>
+          </div>
+        `,
+
+        iconSize: [32, 32],
+
+        iconAnchor: [16, 16],
+
+        popupAnchor: [0, -18]
+
+      });
+
+
     // =========================================
     // MAPPED PROJECTS
     // =========================================
@@ -116,10 +426,6 @@
 
 
     projects.forEach(project => {
-
-      // Each project can have one or more mapped locations.
-      // Projects with multiple locations will receive multiple
-      // markers that all display the same project information.
 
       project.locations.forEach(location => {
 
@@ -368,3 +674,553 @@
       });
 
     });
+
+
+    // =========================================
+    // WATERSHED-WIDE PROGRAMS PANEL
+    // =========================================
+
+    const programsControl =
+      L.control({
+        position: "topleft"
+      });
+
+
+    programsControl.onAdd =
+      function () {
+
+        const div =
+          L.DomUtil.create(
+            "div",
+            "programs-panel"
+          );
+
+
+        div.innerHTML = `
+
+          <div class="programs-header">
+
+            <div>
+
+              <div class="programs-title">
+                Watershed-Wide Programs
+              </div>
+
+              <div class="programs-subtitle">
+                Programs serving Summit County
+              </div>
+
+            </div>
+
+
+            <button
+              class="programs-toggle"
+              type="button"
+              aria-label="Collapse programs"
+            >
+              −
+            </button>
+
+          </div>
+
+
+          <div class="programs-content">
+
+
+            <!-- =================================
+                 SUMMIT COUNTY OUTDOOR COALITION
+            ================================== -->
+
+            <div class="program-item">
+
+              <button
+                class="program-button"
+                type="button"
+              >
+
+                <span class="program-dot"></span>
+
+                <span>
+                  Summit County Outdoor Coalition
+                </span>
+
+                <span class="program-arrow">
+                  +
+                </span>
+
+              </button>
+
+
+              <div class="program-description">
+
+                Part of CPW's Regional Partnership Initiative,
+                SCOC's works to ensure collaborative solutions
+                for conservation and recreation.
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================
+                 RIVER WATCH
+                 EXPANDED TEST PROGRAM
+            ================================== -->
+
+            <div class="program-item program-item-rich">
+
+              <button
+                class="program-button"
+                type="button"
+              >
+
+                <span class="program-dot"></span>
+
+                <span>
+                  River Watch: Water Quality Monitoring
+                </span>
+
+                <span class="program-arrow">
+                  +
+                </span>
+
+              </button>
+
+
+              <div class="program-description program-rich-content">
+
+
+                <!-- PHOTO -->
+
+                <div class="program-photo-placeholder">
+
+                  <div class="program-photo-icon">
+                    ▧
+                  </div>
+
+                  <div class="program-photo-text">
+                    Program photo coming soon
+                  </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="program-rich-description">
+
+                  Through CPW's River Watch and our citizen
+                  science program BRWG ensures water quality
+                  is regularly monitored.
+
+                </div>
+
+
+                <!-- LINKS -->
+
+                <div class="program-resources">
+
+                  <div class="program-resources-title">
+                    Resources & Links
+                  </div>
+
+                  <div class="program-resource-placeholder">
+                    Program links coming soon
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================
+                 EDUCATIONAL PROGRAMMING
+            ================================== -->
+
+            <div class="program-item">
+
+              <button
+                class="program-button"
+                type="button"
+              >
+
+                <span class="program-dot"></span>
+
+                <span>
+                  Educational Programming
+                </span>
+
+                <span class="program-arrow">
+                  +
+                </span>
+
+              </button>
+
+
+              <div class="program-description">
+
+                BRWG provides environmental and water policy
+                educational programming to adults and youth
+                throughout the year in Summit County.
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================
+                 WILDFIRE READY WATERSHEDS
+            ================================== -->
+
+            <div class="program-item">
+
+              <button
+                class="program-button"
+                type="button"
+              >
+
+                <span class="program-dot"></span>
+
+                <span>
+                  Wildfire Ready Watersheds
+                </span>
+
+                <span class="program-arrow">
+                  +
+                </span>
+
+              </button>
+
+
+              <div class="program-description">
+
+                BRWG has secured funding to bring a Wildfire
+                Ready Action Plan to our Community to prepare
+                for pre and post fire impacts.
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================
+                 BLUE RIVER CLEAN-UP FESTIVAL
+            ================================== -->
+
+            <div class="program-item">
+
+              <button
+                class="program-button"
+                type="button"
+              >
+
+                <span class="program-dot"></span>
+
+                <span>
+                  Blue River Clean-up Festival
+                </span>
+
+                <span class="program-arrow">
+                  +
+                </span>
+
+              </button>
+
+
+              <div class="program-description">
+
+                BRWG's annual county-wide River Cleanup
+                brought 215 volunteers together to remove
+                4000 lbs of trash from our rivers.
+
+              </div>
+
+            </div>
+
+
+          </div>
+        `;
+
+
+        // -------------------------------------
+        // PREVENT PANEL FROM MOVING MAP
+        // -------------------------------------
+
+        L.DomEvent.disableClickPropagation(
+          div
+        );
+
+        L.DomEvent.disableScrollPropagation(
+          div
+        );
+
+
+        // -------------------------------------
+        // EXPAND / COLLAPSE PROGRAM ITEMS
+        // -------------------------------------
+
+        const programButtons =
+          div.querySelectorAll(
+            ".program-button"
+          );
+
+
+        programButtons.forEach(
+          button => {
+
+            button.addEventListener(
+              "click",
+              function () {
+
+                const item =
+                  this.closest(
+                    ".program-item"
+                  );
+
+
+                const currentlyOpen =
+                  item.classList.contains(
+                    "open"
+                  );
+
+
+                // Close all items
+
+                div
+                  .querySelectorAll(
+                    ".program-item"
+                  )
+                  .forEach(
+                    otherItem => {
+
+                      otherItem
+                        .classList
+                        .remove(
+                          "open"
+                        );
+
+
+                      const arrow =
+                        otherItem.querySelector(
+                          ".program-arrow"
+                        );
+
+
+                      if (arrow) {
+                        arrow.textContent = "+";
+                      }
+
+                    }
+                  );
+
+
+                // Open selected item
+
+                if (!currentlyOpen) {
+
+                  item
+                    .classList
+                    .add(
+                      "open"
+                    );
+
+
+                  const arrow =
+                    item.querySelector(
+                      ".program-arrow"
+                    );
+
+
+                  if (arrow) {
+                    arrow.textContent = "−";
+                  }
+
+                }
+
+              }
+            );
+
+          }
+        );
+
+
+        // -------------------------------------
+        // COLLAPSE WHOLE PANEL
+        // -------------------------------------
+
+        const toggle =
+          div.querySelector(
+            ".programs-toggle"
+          );
+
+
+        const content =
+          div.querySelector(
+            ".programs-content"
+          );
+
+
+        toggle.addEventListener(
+          "click",
+          function () {
+
+            const collapsed =
+              div.classList.toggle(
+                "collapsed"
+              );
+
+
+            if (collapsed) {
+
+              content.style.display =
+                "none";
+
+
+              toggle.textContent =
+                "+";
+
+
+              toggle.setAttribute(
+                "aria-label",
+                "Expand programs"
+              );
+
+            }
+
+
+            else {
+
+              content.style.display =
+                "block";
+
+
+              toggle.textContent =
+                "−";
+
+
+              toggle.setAttribute(
+                "aria-label",
+                "Collapse programs"
+              );
+
+            }
+
+          }
+        );
+
+
+        return div;
+
+      };
+
+
+    programsControl.addTo(map);
+
+
+    // =========================================
+    // MAP LEGEND
+    // =========================================
+
+    const legend =
+      L.control({
+        position: "bottomright"
+      });
+
+
+    legend.onAdd =
+      function () {
+
+        const div =
+          L.DomUtil.create(
+            "div",
+            "map-legend"
+          );
+
+
+        div.innerHTML = `
+
+          <div class="legend-title">
+            Map Guide
+          </div>
+
+
+          <div class="legend-instructions">
+            Hover for a name • Click for details
+          </div>
+
+
+          <div class="legend-row">
+
+            <span class="legend-dot teal"></span>
+
+            <span>
+              Mapped project
+            </span>
+
+          </div>
+
+
+          <div class="legend-row">
+
+            <span class="legend-dot orange"></span>
+
+            <span>
+              Selected location
+            </span>
+
+          </div>
+
+
+          <div class="legend-row">
+
+            <span class="legend-line"></span>
+
+            <span>
+              Blue River HUC8 boundary
+            </span>
+
+          </div>
+
+        `;
+
+
+        L.DomEvent.disableClickPropagation(
+          div
+        );
+
+        L.DomEvent.disableScrollPropagation(
+          div
+        );
+
+
+        return div;
+
+      };
+
+
+    legend.addTo(map);
+
+
+    // =========================================
+    // KEEP WATERSHED BORDER VISIBLE
+    // =========================================
+
+    watershedLayer.bringToFront();
+
+  })
+
+
+  // ===========================================
+  // ERROR HANDLING
+  // ===========================================
+
+  .catch(error => {
+
+    console.error(
+      "Error loading Blue River watershed:",
+      error
+    );
+
+  });
