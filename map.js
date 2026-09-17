@@ -1,313 +1,3 @@
-// =============================================
-// BLUE RIVER WATERSHED GROUP
-// Projects and Programs Interactive Map
-// =============================================
-
-
-// ---------------------------------------------
-// CREATE MAP
-// ---------------------------------------------
-
-const map = L.map("map", {
-  zoomControl: true
-}).setView([39.55, -106.15], 9);
-
-
-// Store watershed bounds for Reset View
-let watershedBounds = null;
-
-
-// =============================================
-// BASEMAPS
-// =============================================
-
-
-// ---------------------------------------------
-// STANDARD MAP
-// ---------------------------------------------
-
-const standardMap = L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
-  }
-);
-
-
-// ---------------------------------------------
-// TOPOGRAPHIC MAP
-// ---------------------------------------------
-
-const topoMap = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-  {
-    maxZoom: 19,
-    attribution: "Tiles &copy; Esri"
-  }
-);
-
-
-// ---------------------------------------------
-// SATELLITE MAP
-// ---------------------------------------------
-
-const satelliteMap = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-  {
-    maxZoom: 19,
-    attribution: "Tiles &copy; Esri"
-  }
-);
-
-
-// ---------------------------------------------
-// DEFAULT BASEMAP
-// ---------------------------------------------
-
-standardMap.addTo(map);
-
-
-// ---------------------------------------------
-// BASEMAP SWITCHER
-// ---------------------------------------------
-
-const baseMaps = {
-  "Standard": standardMap,
-  "Topographic": topoMap,
-  "Satellite": satelliteMap
-};
-
-
-L.control.layers(
-  baseMaps,
-  null,
-  {
-    position: "topright",
-    collapsed: false
-  }
-).addTo(map);
-
-
-// =============================================
-// SCALE BAR
-// =============================================
-
-L.control.scale({
-  position: "bottomleft",
-  metric: true,
-  imperial: true,
-  maxWidth: 130
-}).addTo(map);
-
-
-// =============================================
-// RESET VIEW BUTTON
-// =============================================
-
-const resetControl = L.control({
-  position: "bottomleft"
-});
-
-
-resetControl.onAdd = function () {
-
-  const div = L.DomUtil.create(
-    "div",
-    "reset-view-control"
-  );
-
-
-  div.innerHTML = `
-    <button
-      class="reset-view-button"
-      type="button"
-      title="Return to the full Blue River watershed"
-    >
-      ↺ Reset View
-    </button>
-  `;
-
-
-  L.DomEvent.disableClickPropagation(div);
-  L.DomEvent.disableScrollPropagation(div);
-
-
-  const button =
-    div.querySelector(".reset-view-button");
-
-
-  button.addEventListener(
-    "click",
-    function () {
-
-      if (watershedBounds) {
-
-        map.fitBounds(
-          watershedBounds,
-          {
-            padding: [35, 35]
-          }
-        );
-
-      }
-
-    }
-  );
-
-
-  return div;
-
-};
-
-
-resetControl.addTo(map);
-
-
-// =============================================
-// BLUE RIVER HUC8
-// HUC8: 14010002
-// =============================================
-
-const hucURL =
-  "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4/query" +
-  "?where=HUC8%3D%2714010002%27" +
-  "&outFields=*" +
-  "&returnGeometry=true" +
-  "&outSR=4326" +
-  "&f=geojson";
-
-
-// =============================================
-// LOAD WATERSHED
-// =============================================
-
-fetch(hucURL)
-
-  .then(response => {
-
-    if (!response.ok) {
-      throw new Error(
-        "USGS request failed: " +
-        response.status
-      );
-    }
-
-    return response.json();
-
-  })
-
-
-  .then(data => {
-
-    if (
-      !data.features ||
-      data.features.length === 0
-    ) {
-
-      throw new Error(
-        "USGS returned no watershed features."
-      );
-
-    }
-
-
-    // =========================================
-    // GRAY OUT EVERYTHING OUTSIDE HUC8
-    // =========================================
-
-    const outsideMask =
-      turf.mask(data);
-
-
-    L.geoJSON(
-      outsideMask,
-      {
-
-        style: {
-          fillColor: "#808080",
-          fillOpacity: 0.45,
-          stroke: false
-        },
-
-        interactive: false
-
-      }
-
-    ).addTo(map);
-
-
-    // =========================================
-    // WATERSHED BOUNDARY
-    // =========================================
-
-    const watershedLayer =
-      L.geoJSON(
-        data,
-        {
-
-          style: {
-            color: "#f28c28",
-            weight: 5,
-            opacity: 1,
-            fillOpacity: 0
-          }
-
-        }
-      ).addTo(map);
-
-
-    watershedLayer.bringToFront();
-
-
-    // =========================================
-    // STORE + ZOOM TO WATERSHED
-    // =========================================
-
-    const bounds =
-      watershedLayer.getBounds();
-
-
-    watershedBounds = bounds;
-
-
-    if (bounds.isValid()) {
-
-      map.fitBounds(
-        bounds,
-        {
-          padding: [35, 35]
-        }
-      );
-
-    }
-
-
-    // =========================================
-    // PROJECT MARKER DESIGN
-    // =========================================
-
-    const projectIcon =
-      L.divIcon({
-
-        className:
-          "project-marker-container",
-
-        html: `
-          <div class="project-marker">
-            <span class="marker-center"></span>
-          </div>
-        `,
-
-        iconSize: [32, 32],
-
-        iconAnchor: [16, 16],
-
-        popupAnchor: [0, -18]
-
-      });
-
-
     // =========================================
     // MAPPED PROJECTS
     // =========================================
@@ -318,9 +8,18 @@ fetch(hucURL)
         name:
           "Blue River Habitat Restoration Project",
 
-        lat: 39.627140,
-
-        lng: -106.071730,
+        locations: [
+          {
+            label: "Upper",
+            lat: 39.626449,
+            lng: -106.068722
+          },
+          {
+            label: "Lower",
+            lat: 39.722039,
+            lng: -106.125105
+          }
+        ],
 
         description:
           "This restoration project aims to restore habitat along the Blue River with the goal of improving the overall ecosystem and restoring Gold Medal status to the Blue River below the Dillon Dam."
@@ -331,9 +30,12 @@ fetch(hucURL)
         name:
           "Peru Creek Mine Restoration",
 
-        lat: 39.603,
-
-        lng: -105.995,
+        locations: [
+          {
+            lat: 39.600308,
+            lng: -105.836425
+          }
+        ],
 
         description:
           "Under the Snake River Watershed Plan, several mine mitigation projects have taken place in the Peru Creek Drainage."
@@ -344,9 +46,12 @@ fetch(hucURL)
         name:
           "Ten Mile Creek Restoration Project",
 
-        lat: 39.575,
-
-        lng: -106.275,
+        locations: [
+          {
+            lat: 39.575,
+            lng: -106.275
+          }
+        ],
 
         description:
           "Ten Mile Creek Project addressed severe impacts from development and I-70. This project revitalized this important riparian corridor."
@@ -357,12 +62,47 @@ fetch(hucURL)
         name:
           "Swan River Restoration Project",
 
-        lat: 39.504,
-
-        lng: -106.001,
+        locations: [
+          {
+            lat: 39.518128,
+            lng: -105.954297
+          }
+        ],
 
         description:
           "Dredge mining tailing piles blocking the Swan River were removed, restoring this vital habitat and improving an incredible recreational and educational resource."
+      },
+
+
+      {
+        name:
+          "North Fork of the Swan River Native Cutthroat Conservation Project",
+
+        locations: [
+          {
+            lat: 39.513867,
+            lng: -105.941422
+          }
+        ],
+
+        description:
+          "North Fork of the Swan River Native Cutthroat Conservation Project."
+      },
+
+
+      {
+        name:
+          "Upper Blue River Restoration Working Group",
+
+        locations: [
+          {
+            lat: 39.475823,
+            lng: -106.046487
+          }
+        ],
+
+        description:
+          "Upper Blue River Restoration Working Group."
       }
 
     ];
@@ -377,154 +117,197 @@ fetch(hucURL)
 
     projects.forEach(project => {
 
-      const marker =
-        L.marker(
-          [
-            project.lat,
-            project.lng
-          ],
-          {
-            icon: projectIcon
-          }
-        )
-        .addTo(map);
+      // Each project can have one or more mapped locations.
+      // Projects with multiple locations will receive multiple
+      // markers that all display the same project information.
+
+      project.locations.forEach(location => {
+
+        const marker =
+          L.marker(
+            [
+              location.lat,
+              location.lng
+            ],
+            {
+              icon: projectIcon
+            }
+          )
+          .addTo(map);
 
 
-      // ---------------------------------------
-      // HOVER LABEL
-      // ---------------------------------------
+        // ---------------------------------------
+        // HOVER LABEL
+        // ---------------------------------------
 
-      marker.bindTooltip(
-        project.name,
-        {
-          direction: "right",
-          offset: [15, 0],
-          opacity: 1,
-          className: "project-tooltip"
+        let tooltipLabel =
+          project.name;
+
+
+        if (location.label) {
+
+          tooltipLabel +=
+            " — " + location.label;
+
         }
-      );
 
 
-      // ---------------------------------------
-      // POPUP CONTENT
-      // ---------------------------------------
-
-      let popupContent;
-
-
-      // =======================================
-      // EXPANDED BLUE RIVER POPUP
-      // =======================================
-
-      if (
-        project.name ===
-        "Blue River Habitat Restoration Project"
-      ) {
-
-        popupContent = `
-          <div class="project-popup project-popup-expanded">
-
-            <h3>
-              ${project.name}
-            </h3>
+        marker.bindTooltip(
+          tooltipLabel,
+          {
+            direction: "right",
+            offset: [15, 0],
+            opacity: 1,
+            className: "project-tooltip"
+          }
+        );
 
 
-            <div class="project-photo-placeholder">
+        // ---------------------------------------
+        // POPUP CONTENT
+        // ---------------------------------------
 
-              <div class="photo-placeholder-icon">
-                ▧
+        let popupContent;
+
+
+        // =======================================
+        // EXPANDED BLUE RIVER POPUP
+        // =======================================
+
+        if (
+          project.name ===
+          "Blue River Habitat Restoration Project"
+        ) {
+
+          popupContent = `
+            <div class="project-popup project-popup-expanded">
+
+              <h3>
+                ${project.name}
+              </h3>
+
+
+              <div class="project-photo-placeholder">
+
+                <div class="photo-placeholder-icon">
+                  ▧
+                </div>
+
+                <div class="photo-placeholder-text">
+                  Project photo coming soon
+                </div>
+
               </div>
 
-              <div class="photo-placeholder-text">
-                Project photo coming soon
+
+              <div class="project-description">
+
+                <p>
+                  ${project.description}
+                </p>
+
+              </div>
+
+
+              <div class="project-resources">
+
+                <div class="resources-title">
+                  Resources & Links
+                </div>
+
+                <div class="resource-placeholder">
+                  Project links coming soon
+                </div>
+
               </div>
 
             </div>
+          `;
+
+        }
 
 
-            <div class="project-description">
+        // =======================================
+        // NORMAL POPUPS
+        // =======================================
+
+        else {
+
+          popupContent = `
+            <div class="project-popup">
+
+              <h3>
+                ${project.name}
+              </h3>
 
               <p>
                 ${project.description}
               </p>
 
             </div>
+          `;
 
-
-            <div class="project-resources">
-
-              <div class="resources-title">
-                Resources & Links
-              </div>
-
-              <div class="resource-placeholder">
-                Project links coming soon
-              </div>
-
-            </div>
-
-          </div>
-        `;
-
-      }
-
-
-      // =======================================
-      // NORMAL POPUPS
-      // =======================================
-
-      else {
-
-        popupContent = `
-          <div class="project-popup">
-
-            <h3>
-              ${project.name}
-            </h3>
-
-            <p>
-              ${project.description}
-            </p>
-
-          </div>
-        `;
-
-      }
-
-
-      marker.bindPopup(
-        popupContent,
-        {
-          maxWidth: 380
         }
-      );
 
 
-      // ---------------------------------------
-      // CLICK MARKER
-      // ---------------------------------------
-
-      marker.on(
-        "click",
-        function () {
-
-          if (selectedMarker) {
-
-            const oldElement =
-              selectedMarker.getElement();
+        marker.bindPopup(
+          popupContent,
+          {
+            maxWidth: 380
+          }
+        );
 
 
-            if (oldElement) {
+        // ---------------------------------------
+        // CLICK MARKER
+        // ---------------------------------------
 
-              const oldCircle =
-                oldElement.querySelector(
+        marker.on(
+          "click",
+          function () {
+
+            if (selectedMarker) {
+
+              const oldElement =
+                selectedMarker.getElement();
+
+
+              if (oldElement) {
+
+                const oldCircle =
+                  oldElement.querySelector(
+                    ".project-marker"
+                  );
+
+
+                if (oldCircle) {
+
+                  oldCircle.classList.remove(
+                    "selected"
+                  );
+
+                }
+
+              }
+
+            }
+
+
+            const markerElement =
+              marker.getElement();
+
+
+            if (markerElement) {
+
+              const circle =
+                markerElement.querySelector(
                   ".project-marker"
                 );
 
 
-              if (oldCircle) {
+              if (circle) {
 
-                oldCircle.classList.remove(
+                circle.classList.add(
                   "selected"
                 );
 
@@ -532,629 +315,56 @@ fetch(hucURL)
 
             }
 
-          }
 
-
-          const markerElement =
-            marker.getElement();
-
-
-          if (markerElement) {
-
-            const circle =
-              markerElement.querySelector(
-                ".project-marker"
-              );
-
-
-            if (circle) {
-
-              circle.classList.add(
-                "selected"
-              );
-
-            }
-
-          }
-
-
-          selectedMarker =
-            marker;
-
-        }
-      );
-
-
-      // ---------------------------------------
-      // POPUP CLOSED
-      // ---------------------------------------
-
-      marker.on(
-        "popupclose",
-        function () {
-
-          const markerElement =
-            marker.getElement();
-
-
-          if (markerElement) {
-
-            const circle =
-              markerElement.querySelector(
-                ".project-marker"
-              );
-
-
-            if (circle) {
-
-              circle.classList.remove(
-                "selected"
-              );
-
-            }
-
-          }
-
-
-          if (
-            selectedMarker === marker
-          ) {
-
-            selectedMarker = null;
-
-          }
-
-        }
-      );
-
-    });
-
-
-    // =========================================
-    // WATERSHED-WIDE PROGRAMS PANEL
-    // =========================================
-
-    const programsControl =
-      L.control({
-        position: "topleft"
-      });
-
-
-    programsControl.onAdd =
-      function () {
-
-        const div =
-          L.DomUtil.create(
-            "div",
-            "programs-panel"
-          );
-
-
-        div.innerHTML = `
-
-          <div class="programs-header">
-
-            <div>
-
-              <div class="programs-title">
-                Watershed-Wide Programs
-              </div>
-
-              <div class="programs-subtitle">
-                Programs serving Summit County
-              </div>
-
-            </div>
-
-
-            <button
-              class="programs-toggle"
-              type="button"
-              aria-label="Collapse programs"
-            >
-              −
-            </button>
-
-          </div>
-
-
-          <div class="programs-content">
-
-
-            <!-- =================================
-                 SUMMIT COUNTY OUTDOOR COALITION
-            ================================== -->
-
-            <div class="program-item">
-
-              <button
-                class="program-button"
-                type="button"
-              >
-
-                <span class="program-dot"></span>
-
-                <span>
-                  Summit County Outdoor Coalition
-                </span>
-
-                <span class="program-arrow">
-                  +
-                </span>
-
-              </button>
-
-
-              <div class="program-description">
-
-                Part of CPW's Regional Partnership Initiative,
-                SCOC's works to ensure collaborative solutions
-                for conservation and recreation.
-
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 RIVER WATCH
-                 EXPANDED TEST PROGRAM
-            ================================== -->
-
-            <div class="program-item program-item-rich">
-
-              <button
-                class="program-button"
-                type="button"
-              >
-
-                <span class="program-dot"></span>
-
-                <span>
-                  River Watch: Water Quality Monitoring
-                </span>
-
-                <span class="program-arrow">
-                  +
-                </span>
-
-              </button>
-
-
-              <div class="program-description program-rich-content">
-
-
-                <!-- PHOTO -->
-
-                <div class="program-photo-placeholder">
-
-                  <div class="program-photo-icon">
-                    ▧
-                  </div>
-
-                  <div class="program-photo-text">
-                    Program photo coming soon
-                  </div>
-
-                </div>
-
-
-                <!-- DESCRIPTION -->
-
-                <div class="program-rich-description">
-
-                  Through CPW's River Watch and our citizen
-                  science program BRWG ensures water quality
-                  is regularly monitored.
-
-                </div>
-
-
-                <!-- LINKS -->
-
-                <div class="program-resources">
-
-                  <div class="program-resources-title">
-                    Resources & Links
-                  </div>
-
-                  <div class="program-resource-placeholder">
-                    Program links coming soon
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 EDUCATIONAL PROGRAMMING
-            ================================== -->
-
-            <div class="program-item">
-
-              <button
-                class="program-button"
-                type="button"
-              >
-
-                <span class="program-dot"></span>
-
-                <span>
-                  Educational Programming
-                </span>
-
-                <span class="program-arrow">
-                  +
-                </span>
-
-              </button>
-
-
-              <div class="program-description">
-
-                BRWG provides environmental and water policy
-                educational programming to adults and youth
-                throughout the year in Summit County.
-
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 WILDFIRE READY WATERSHEDS
-            ================================== -->
-
-            <div class="program-item">
-
-              <button
-                class="program-button"
-                type="button"
-              >
-
-                <span class="program-dot"></span>
-
-                <span>
-                  Wildfire Ready Watersheds
-                </span>
-
-                <span class="program-arrow">
-                  +
-                </span>
-
-              </button>
-
-
-              <div class="program-description">
-
-                BRWG has secured funding to bring a Wildfire
-                Ready Action Plan to our Community to prepare
-                for pre and post fire impacts.
-
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 BLUE RIVER CLEAN-UP FESTIVAL
-            ================================== -->
-
-            <div class="program-item">
-
-              <button
-                class="program-button"
-                type="button"
-              >
-
-                <span class="program-dot"></span>
-
-                <span>
-                  Blue River Clean-up Festival
-                </span>
-
-                <span class="program-arrow">
-                  +
-                </span>
-
-              </button>
-
-
-              <div class="program-description">
-
-                BRWG's annual county-wide River Cleanup
-                brought 215 volunteers together to remove
-                4000 lbs of trash from our rivers.
-
-              </div>
-
-            </div>
-
-
-          </div>
-        `;
-
-
-        // -------------------------------------
-        // PREVENT PANEL FROM MOVING MAP
-        // -------------------------------------
-
-        L.DomEvent.disableClickPropagation(
-          div
-        );
-
-        L.DomEvent.disableScrollPropagation(
-          div
-        );
-
-
-        // -------------------------------------
-        // EXPAND / COLLAPSE PROGRAM ITEMS
-        // -------------------------------------
-
-        const programButtons =
-          div.querySelectorAll(
-            ".program-button"
-          );
-
-
-        programButtons.forEach(
-          button => {
-
-            button.addEventListener(
-              "click",
-              function () {
-
-                const item =
-                  this.closest(
-                    ".program-item"
-                  );
-
-
-                const currentlyOpen =
-                  item.classList.contains(
-                    "open"
-                  );
-
-
-                // Close all items
-
-                div
-                  .querySelectorAll(
-                    ".program-item"
-                  )
-                  .forEach(
-                    otherItem => {
-
-                      otherItem
-                        .classList
-                        .remove(
-                          "open"
-                        );
-
-
-                      const arrow =
-                        otherItem.querySelector(
-                          ".program-arrow"
-                        );
-
-
-                      if (arrow) {
-                        arrow.textContent = "+";
-                      }
-
-                    }
-                  );
-
-
-                // Open selected item
-
-                if (!currentlyOpen) {
-
-                  item
-                    .classList
-                    .add(
-                      "open"
-                    );
-
-
-                  const arrow =
-                    item.querySelector(
-                      ".program-arrow"
-                    );
-
-
-                  if (arrow) {
-                    arrow.textContent = "−";
-                  }
-
-                }
-
-              }
-            );
+            selectedMarker =
+              marker;
 
           }
         );
 
 
-        // -------------------------------------
-        // COLLAPSE WHOLE PANEL
-        // -------------------------------------
+        // ---------------------------------------
+        // POPUP CLOSED
+        // ---------------------------------------
 
-        const toggle =
-          div.querySelector(
-            ".programs-toggle"
-          );
-
-
-        const content =
-          div.querySelector(
-            ".programs-content"
-          );
-
-
-        toggle.addEventListener(
-          "click",
+        marker.on(
+          "popupclose",
           function () {
 
-            const collapsed =
-              div.classList.toggle(
-                "collapsed"
-              );
+            const markerElement =
+              marker.getElement();
 
 
-            if (collapsed) {
+            if (markerElement) {
 
-              content.style.display =
-                "none";
-
-
-              toggle.textContent =
-                "+";
+              const circle =
+                markerElement.querySelector(
+                  ".project-marker"
+                );
 
 
-              toggle.setAttribute(
-                "aria-label",
-                "Expand programs"
-              );
+              if (circle) {
+
+                circle.classList.remove(
+                  "selected"
+                );
+
+              }
 
             }
 
 
-            else {
+            if (
+              selectedMarker === marker
+            ) {
 
-              content.style.display =
-                "block";
-
-
-              toggle.textContent =
-                "−";
-
-
-              toggle.setAttribute(
-                "aria-label",
-                "Collapse programs"
-              );
+              selectedMarker = null;
 
             }
 
           }
         );
 
-
-        return div;
-
-      };
-
-
-    programsControl.addTo(map);
-
-
-    // =========================================
-    // MAP LEGEND
-    // =========================================
-
-    const legend =
-      L.control({
-        position: "bottomright"
       });
 
-
-    legend.onAdd =
-      function () {
-
-        const div =
-          L.DomUtil.create(
-            "div",
-            "map-legend"
-          );
-
-
-        div.innerHTML = `
-
-          <div class="legend-title">
-            Map Guide
-          </div>
-
-
-          <div class="legend-instructions">
-            Hover for a name • Click for details
-          </div>
-
-
-          <div class="legend-row">
-
-            <span class="legend-dot teal"></span>
-
-            <span>
-              Mapped project
-            </span>
-
-          </div>
-
-
-          <div class="legend-row">
-
-            <span class="legend-dot orange"></span>
-
-            <span>
-              Selected location
-            </span>
-
-          </div>
-
-
-          <div class="legend-row">
-
-            <span class="legend-line"></span>
-
-            <span>
-              Blue River HUC8 boundary
-            </span>
-
-          </div>
-
-        `;
-
-
-        L.DomEvent.disableClickPropagation(
-          div
-        );
-
-        L.DomEvent.disableScrollPropagation(
-          div
-        );
-
-
-        return div;
-
-      };
-
-
-    legend.addTo(map);
-
-
-    // =========================================
-    // KEEP WATERSHED BORDER VISIBLE
-    // =========================================
-
-    watershedLayer.bringToFront();
-
-  })
-
-
-  // ===========================================
-  // ERROR HANDLING
-  // ===========================================
-
-  .catch(error => {
-
-    console.error(
-      "Error loading Blue River watershed:",
-      error
-    );
-
-  });
+    });
